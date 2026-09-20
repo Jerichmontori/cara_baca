@@ -1,0 +1,94 @@
+/* theme.css - Sacred Liturgical Design System */
+:root {
+  /* Color Palette */
+  --bg-base: #070a10;
+  --bg-surface: #0e1422;
+  --bg-surface-elevated: #151d30;
+  --bg-surface-translucent: rgba(14, 20, 34, 0.82);
+  --bg-card: rgba(21, 29, 48, 0.7);
+  --bg-card-hover: rgba(28, 39, 65, 0.85);
+
+  /* Liturgical Gold */
+  --gold-primary: #d4af37;
+  --gold-light: #f5e298;
+  --gold-glow: rgba(212, 175, 55, 0.35);
+  --gold-dark: #997c21;
+  --gold-border: rgba(212, 175, 55, 0.28);
+  --gold-border-subtle: rgba(212, 175, 55, 0.12);
+
+  /* Sacred Burgundy & Crimson */
+  --burgundy-primary: #7b182e;
+  --burgundy-light: #a42844;
+  --burgundy-glow: rgba(164, 40, 68, 0.3);
+  --burgundy-dark: #4b0e1b;
+
+  /* Liturgical Violet & Navy */
+  --navy-deep: #0a1120;
+  --navy-accent: #213253;
+  --violet-subtle: #3a224a;
+
+  /* State & Category Colors */
+  --accent-praise: #10b981;    /* Hijau sukacita & pujian */
+  --accent-lament: #6366f1;    /* Indigo ratapan & permohonan */
+  --accent-trust: #0ea5e9;     /* Biru penyerahan diri & damai */
+  --accent-solemn: #f59e0b;    /* Amber khidmat & penghormatan */
+  --accent-repentance: #ec4899;/* Magenta pertobatan */
+
+  /* Text Colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #8493a8;
+  --text-gold: #f3df97;
+  --text-inverse: #080b12;
+
+  /* Typography */
+  --font-heading: 'Cinzel', 'Playfair Display', Georgia, serif;
+  --font-serif: 'Playfair Display', Garamond, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Spacing */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows & Glows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+  --glow-gold: 0 0 24px rgba(212, 175, 55, 0.25);
+  --glow-gold-lg: 0 0 45px rgba(212, 175, 55, 0.4);
+  --glow-burgundy: 0 0 30px rgba(164, 40, 68, 0.35);
+
+  /* Transitions */
+  --transition-fast: 0.18s ease;
+  --transition-normal: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 10% 25%, rgba(123, 24, 46, 0.1) 0%, transparent 45%),
+    radial-gradient(circle at 90% 70%, rgba(33, 50, 83, 0.15) 0%, transparent 50%);
+  background-attachment: fixed;
+  background-size: cover;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Subtle sacred grid/cross background overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(rgba(212, 175, 55, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
