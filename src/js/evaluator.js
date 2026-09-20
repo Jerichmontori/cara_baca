@@ -194,9 +194,9 @@ export class VAIEPPEvaluator {
 
         case "artikulasi":
           // Cari ayat dengan konsonan padat atau kata sakral penting
-          const artVerse = verses.find(v => /takkan|kekurangan|tahirkanlah|bersorak|memperhitungkan|sembelihan/i.test(v.rawText)) || verses[0];
+          const artVerse = verses.find(v => /takkan|kekurangan|tahirkanlah|bersorak|memperhitungkan|sembelihan|bebal|menilik|gemetar/i.test(v.rawText)) || verses[0];
           targetVerseNum = artVerse.number;
-          const matchWord = artVerse.rawText.match(/\b(TUHANlah|takkan|kekurangan|tahirkanlah|bersorak-sorailah|memperhitungkan|kurban|sembelihan|perisai)\b/i);
+          const matchWord = artVerse.rawText.match(/\b(TUHANlah|takkan|kekurangan|tahirkanlah|bersorak-sorailah|memperhitungkan|kurban|sembelihan|perisai|bebal|menilik|gemetar)\b/i);
           const wordStr = matchWord ? matchWord[0] : "kata-kata penting";
           targetPhrase = `Kata '${wordStr}' pada Ayat ${targetVerseNum}`;
           criticalReason = `Pada Ayat ${targetVerseNum} khususnya kata '${wordStr}', pembaca sering menelan suku kata akhir atau merapatkan bibir terlalu cepat sehingga artikulasi tidak terdengar jelas di baris belakang.`;

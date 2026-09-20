@@ -100,6 +100,116 @@ export const psalmPresets = [
     ]
   },
   {
+    id: "mzm-14",
+    title: "Mazmur 14 (TB2)",
+    version: "TB2",
+    subtitle: "Kebodohan orang fasik & sukacita pengharapan • Terjemahan Baru Edisi 2 (LAI)",
+    refren: "TUHAN adalah tempat perlindungan bagi orang yang tertindas.",
+    genre: "Mazmur Pengajaran & Peneguran Moral (Prophetic Wisdom & Hope)",
+    category: "solemn",
+    macroAnalysis: {
+      psikologiGlobal: "Membaca Mazmur 14 membutuhkan transisi emosi yang jelas, bergerak dari nada teguran yang berat dan prihatin di awal menuju keyakinan serta sukacita pengharapan di akhir.",
+      suasanaBatin: "Berat, prihatin, dan terhenyak oleh kebebalan moral di awal, lalu beralih menuju keyakinan kokoh bahwa Allah menyertai angkatan yang benar dan memuncak pada sorak-sorai sukacita keselamatan.",
+      nadaBatinPembaca: "Tegas, penuh wibawa profetik, bernada dada rendah dan prihatin di awal, lalu berangsur hangat, mantap, dan akhirnya meledak dalam sukacita penuh harapan.",
+      emotionalArc: "Ayat 1-3: Teguran berat & keprihatinan mendalam atas penyangkalan terhadap Tuhan -> Ayat 4: Gugatan retoris bertenaga -> Ayat 5-6: Kengerian orang fasik vs perlindungan TUHAN -> Ayat 7: Sukacita pengharapan dan sorak-sorai pemulihan umat.",
+      fokusUtamaVAIEPP: "Vokal: Gunakan pernapasan diafragma agar suara bulat, stabil, dan beresonansi dari rongga dada, bukan suara tenggorokan yang tipis. Artikulasi: Buka mulut selebar minimal dua jari untuk vokal terbuka (a, o), serta pertegas konsonan letup (t, k, p, d, b) agar kata-kata seperti bebal, menilik, dan gemetar terdengar tajam sampai baris belakang. Penampilan: Berdiri tegak dengan tumpuan seimbang pada kedua kaki, pundak rileks, dan pegang teks setinggi dada agar pandangan tidak terus menunduk. Jaga kontak mata berkala dengan audiens pada setiap jeda kalimat."
+    },
+    contemplationGuide: "Tarik nafas diafragma dalam. Rasakan beratnya keprihatinan batin pemazmur atas dunia yang melupakan Allah. Hayati bahwa tugas lektor bukan memarahi umat, melainkan mewartakan kebenaran dengan wibawa kasih ilahi. Bersiaplah mengalirkan transisi emosi dari duka teguran menuju sukacita keselamatan Sion.",
+    verses: [
+      {
+        number: 1,
+        rawText: "Untuk pemimpin biduan. Dari Daud. // Orang bebal berkata dalam hatinya: / 'Tidak ada Allah.' // Busuk dan jijik perbuatan mereka, / tidak ada yang berbuat baik.",
+        annotatedHtml: "Untuk pemimpin biduan. Dari Daud. <span class=\"breath-long\" title=\"Jeda hening panjang (Caesura)\">//</span> Orang <span class=\"stress-word\">bebal</span> berkata dalam hatinya: <span class=\"breath-short\" title=\"Jeda nafas pendek\">/</span> '<span class=\"stress-word\">Tidak ada Allah</span>.' <span class=\"breath-long\" title=\"Jeda hening panjang (Caesura)\">//</span> <span class=\"stress-word\">Busuk</span> dan <span class=\"stress-word\">jijik</span> perbuatan mereka, <span class=\"breath-short\" title=\"Jeda nafas pendek\">/</span> <span class=\"stress-word\">tidak ada</span> yang berbuat baik.",
+        psikologiAyat: "Membaca Mazmur 14 membutuhkan transisi emosi yang jelas, bergerak dari nada teguran yang berat dan prihatin di awal menuju keyakinan serta sukacita pengharapan di akhir. Membuka realitas penyangkalan terhadap Tuhan yang membusukkan nurani dan perbuatan moral manusia.",
+        nadaBatin: "Buka dengan nada formal dan tegas pada pengantar ('Untuk pemimpin biduan. Dari Daud.'). Masuk ke isi firman, turunkan nada menjadi lebih rendah, berat, dan sedikit ditekan.",
+        vokal: "Gunakan pernapasan diafragma agar suara bulat, stabil, dan beresonansi dari rongga dada, bukan suara tenggorokan yang tipis.",
+        artikulasi: "Buka mulut selebar minimal dua jari untuk vokal terbuka (a, o), serta pertegas konsonan letup (t, k, p, d, b) agar kata-kata seperti bebal, menilik, dan gemetar terdengar tajam sampai baris belakang.",
+        intonasi: "Buka dengan nada formal dan tegas pada pengantar. Masuk ke isi firman, turunkan nada menjadi lebih rendah, berat, dan sedikit ditekan. Beri jeda sepersekian detik sebelum frasa 'Tidak ada Allah'. Tekan kata Busuk, jijik, dan tidak ada.",
+        ekspresi: "Tatapan tajam, alis sedikit bertaut, mencerminkan rasa keprihatinan yang mendalam atas penyangkalan terhadap Tuhan.",
+        penghayatan: "Mencerminkan rasa keprihatinan yang mendalam atas penyangkalan terhadap Tuhan. Rasakan kepedihan batin atas kebobrokan ketika manusia hidup tanpa takut akan Allah.",
+        penampilan: "Berdiri tegak dengan tumpuan seimbang pada kedua kaki, pundak rileks, dan pegang teks setinggi dada agar pandangan tidak terus menunduk. Jaga kontak mata berkala dengan audiens pada setiap jeda kalimat."
+      },
+      {
+        number: 2,
+        rawText: "TUHAN memandang ke bawah dari surga kepada anak-anak manusia / untuk melihat apakah ada yang berakal budi / dan yang mencari Allah.",
+        annotatedHtml: "<span class=\"stress-word\">TUHAN memandang</span> ke bawah dari surga kepada anak-anak manusia <span class=\"breath-short\">/</span> untuk melihat apakah ada yang <span class=\"stress-word\">berakal budi</span> <span class=\"breath-short\">/</span> dan yang <span class=\"stress-word\">mencari Allah</span>.",
+        psikologiAyat: "Tatapan ilahi yang menyelidiki bumi; kesunyian kosmis penelusuran Allah yang mencari manusia beriman dan berakal budi.",
+        nadaBatin: "Agung, meditatif, sarat keprihatinan tenang yang menyelidik hati sanubari pendengar.",
+        vokal: "Mezzo-piano beresonansi dada, suara jernih bagai gema dari ketinggian surga.",
+        artikulasi: "Buka vokal bundar pada 'surga', pertegas konsonan 'm' dan 'k' pada 'memandang' dan 'berakal budi'.",
+        intonasi: "Nada naik melandai khidmat pada 'TUHAN memandang ke bawah dari surga', lalu menurun tenang meditatif pada 'dan yang mencari Allah'.",
+        ekspresi: "Tatapan mata menatap lurus meluas ke depan seakan-akan merefleksikan pandangan Allah yang menilik umat.",
+        penghayatan: "Biarkan hadirin merasakan tatapan suci Tuhan yang memeriksa sudut-sudut batin mereka.",
+        penampilan: "Postur tegap berwibawa, tangan tenang memegang teks setinggi dada tanpa bergoyang."
+      },
+      {
+        number: 3,
+        rawText: "Mereka semua telah menyeleweng, // semuanya telah bejat; // tidak ada yang berbuat baik, / seorang pun tidak.",
+        annotatedHtml: "Mereka semua telah <span class=\"stress-word\">menyeleweng</span>, <span class=\"breath-long\">//</span> semuanya telah <span class=\"stress-word\">bejat</span>; <span class=\"breath-long\">//</span> <span class=\"stress-word\">tidak ada</span> yang berbuat baik, <span class=\"breath-short\">/</span> <span class=\"stress-word\">seorang pun tidak</span>.",
+        psikologiAyat: "Puncak keprihatinan profetik atas kebobrokan universal; tiada satu pun manusia yang dapat memegahkan kesucian dirinya di hadapan Allah.",
+        nadaBatin: "Sangat berat, penuh aksentuasi keprihatinan yang tuntas tanpa kompromi.",
+        vokal: "Forte-piano terkontrol; volume suara dalam dan tebal bertumpu kuat pada diafragma bawah.",
+        artikulasi: "Letupkan konsonan 't' pada 'bejat', serta artikulasikan bersih suku kata 'se-o-rang pun ti-dak'.",
+        intonasi: "Turunkan nada lebih dalam pada 'semuanya telah bejat', dan kunci dengan kadens tuntas berwibawa pada 'seorang pun tidak'.",
+        ekspresi: "Alis bertaut khidmat, tatapan lurus menyadarkan audiens akan realitas kerapuhan manusia.",
+        penghayatan: "Hayati duka seorang hamba Tuhan yang menyaksikan kerapuhan moral dan perlunya rahmat ilahi.",
+        penampilan: "Tetap berdiri tenang dan khusyuk tanpa gestur menuding; biarkan sabda firman yang berkuasa meresap."
+      },
+      {
+        number: 4,
+        rawText: "Tidak sadarkah semua orang yang melakukan kejahatan, / yang memakan habis umat-Ku seperti memakan roti, // dan yang tidak berseru kepada TUHAN?",
+        annotatedHtml: "<span class=\"stress-word\">Tidak sadarkah</span> semua orang yang melakukan kejahatan, <span class=\"breath-short\">/</span> yang memakan habis umat-Ku seperti <span class=\"stress-word\">memakan roti</span>, <span class=\"breath-long\">//</span> dan yang <span class=\"stress-word\">tidak berseru</span> kepada TUHAN?",
+        psikologiAyat: "Gugatan keadilan Allah; pembelaan tegas terhadap kaum lemah dan tertindas dari keserakahan orang jahat.",
+        nadaBatin: "Menggugat, bertenaga profetik, membangkitkan nurani yang tertidur lelap.",
+        vokal: "Crescendo bertenaga, proyeksi suara tegas terarah menembus ruang ibadah.",
+        artikulasi: "Pertegas konsonan letup 't-d-k' pada 'tidak sadarkah' dan 'm-m-k-n' pada 'memakan roti'.",
+        intonasi: "Nada tanya reflektif yang meninggi di akhir frasa (↗ Nada Naik), menggugah permenungan jemaat.",
+        ekspresi: "Mata terbuka tegas, sorot pandang menembus sekeliling ruang mimbar dengan keberanian kebenaran.",
+        penghayatan: "Rasakan api keadilan Tuhan yang bangkit membela kaum papa dan tertindas.",
+        penampilan: "Dada terangkat mantap, tubuh condong sedikit ke depan memancarkan wibawa pembawa warta."
+      },
+      {
+        number: 5,
+        rawText: "Di sanalah mereka sangat terkejut gemetar, // karena Allah menyertai angkatan yang benar.",
+        annotatedHtml: "Di sanalah mereka <span class=\"stress-word\">sangat terkejut gemetar</span>, <span class=\"breath-long\">//</span> karena <span class=\"stress-word\">Allah menyertai</span> angkatan yang benar.",
+        psikologiAyat: "Titik balik emosional: kengerian orang fasik ketika menyadari bahwa Allah yang hidup hadir membela orang beriman.",
+        nadaBatin: "Penuh getaran kengerian di paruh awal, berganti ketenteraman agung dan perlindungan di paruh kedua.",
+        vokal: "Vokal intens pada 'terkejut gemetar', lalu melembut penuh wibawa pada 'Allah menyertai'.",
+        artikulasi: "Gigit tajam konsonan letup 'g' dan 't' pada kata 'ge-me-tar', lalu haluskan pada 'me-nyer-ta-i'.",
+        intonasi: "Kontras melodi: ayunan tinggi pada 'terkejut', lalu turun hangat dan kokoh pada 'Allah menyertai angkatan yang benar'.",
+        ekspresi: "Peralihan ekspresi wajah dari tegang kaget menuju teduh beriman penuh keyakinan.",
+        penghayatan: "Rasakan bagaimana kepalsuan duniawi runtuh seketika saat hadirat kekudusan Allah dinyatakan.",
+        penampilan: "Jeda hening 1-2 detik di tengah tanda // dengan pandangan mata tenang kepada audiens."
+      },
+      {
+        number: 6,
+        rawText: "Kamu hendak mempermalukan rancangan orang yang tertindas, // tetapi TUHAN adalah tempat perlindungannya.",
+        annotatedHtml: "Kamu hendak <span class=\"stress-word\">mempermalukan rancangan</span> orang yang tertindas, <span class=\"breath-long\">//</span> tetapi <span class=\"stress-word\">TUHAN adalah tempat perlindungannya</span>.",
+        psikologiAyat: "Kepastian kemenangan iman; kontras tajam antara niat jahat dunia dengan benteng perlindungan TUHAN yang kokoh.",
+        nadaBatin: "Tegas menepis cemoohan, lalu penuh kebanggaan kudus atas perlindungan Allah.",
+        vokal: "Transisi vokal dari nada minor peneguran menuju resonansi nada mayor kemenangan iman.",
+        artikulasi: "Ucapkan 'per-lin-dung-an-nya' dengan ketukan ritmis artikulatif yang berbobot.",
+        intonasi: "Kadens mengangkat pada 'tetapi TUHAN', lalu melandai mantap tuntas pada 'tempat perlindungannya'.",
+        ekspresi: "Dahi terbuka lapang, senyum kemenangan iman yang tenang merekah di bibir.",
+        penghayatan: "Hayati bahwa orang lemah yang bersandar pada Tuhan memiliki perlindungan terkuat di alam semesta.",
+        penampilan: "Punggung lurus kokoh bagai benteng pertahanan yang tak tergoyahkan."
+      },
+      {
+        number: 7,
+        rawText: "Ya, kiranya dari Sion datang keselamatan bagi Israel! // Apabila TUHAN memulihkan keadaan umat-Nya, / Yakub akan bersorak-sorak, / Israel akan bersukacita.",
+        annotatedHtml: "Ya, kiranya dari Sion datang <span class=\"stress-word\">keselamatan bagi Israel</span>! <span class=\"breath-long\">//</span> Apabila <span class=\"stress-word\">TUHAN memulihkan</span> keadaan umat-Nya, <span class=\"breath-short\">/</span> Yakub akan <span class=\"stress-word\">bersorak-sorak</span>, <span class=\"breath-short\">/</span> Israel akan <span class=\"stress-word\">bersukacita</span>.",
+        psikologiAyat: "Transisi paripurna menuju puncak sukacita pengharapan; pemulihan keadaan umat dan perayaan keselamatan abadi.",
+        nadaBatin: "Penuh kerinduan mesianik yang meledak menjadi sorak-sorai sukacita kemenangan keselamatan yang melimpah.",
+        vokal: "Forte hangat, penuh warna suara cemerlang (sonorous & uplifting), nafas diafragma terisi penuh dengan sukacita.",
+        artikulasi: "Lepaskan kata 'bersorak-sorak' dan 'bersukacita' dengan vokal terbuka cerah dan senyum bibir yang merekah.",
+        intonasi: "Melodi melambung cerah ke nada atas (↗ Nada Naik Sorak Kemenangan), tempo mengalir anggun dan bersemangat.",
+        ekspresi: "Wajah berseri-seri penuh sukacita iman, tatapan mata berbinar memancarkan pengharapan bagi seluruh hadirin.",
+        penghayatan: "Lepaskan seluruh duka dan teguran di ayat 1; hayati betapa agungnya keselamatan ketika Tuhan memulihkan umat-Nya.",
+        penampilan: "Berdiri tegak mulia, tahan keheningan penuh senyum damai selama 2-3 detik setelah kata terakhir sebelum membungkuk hormat ke arah altar."
+      }
+    ]
+  },
+  {
     id: "mzm-51",
     title: "Mazmur 51 (TB2)",
     version: "TB2",
