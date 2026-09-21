@@ -119,44 +119,66 @@ export class LiturgicalAudioEngine {
     osc.stop(now + 0.05);
   }
 
-  // Audio Demonstrasi Nada Naik (↗), Nada Turun (↘), dan Nada Datar (→)
-  playPitchContour(type = "up", duration = 0.9) {
+  // Audio Demonstrasi Melodi Nada Liturgis Murni (Naik ↗, Turun ↘, Datar →)
+  playPitchContour(type = "up", duration = 0.85) {
     this.initContext();
     const ctx = this.audioCtx;
+    if (!ctx) return;
     const now = ctx.currentTime;
 
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = "sine";
+    // Dual-oscillator synthesizer: fundamental (sine) + octave overtone (triangle)
+    // Menghasilkan warna suara genta flute / pipa organ gereja yang bening, sakral, dan terdengar jelas
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
 
-    gain.gain.setValueAtTime(0.001, now);
-    gain.gain.exponentialRampToValueAtTime(0.28, now + 0.05);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    osc1.type = "sine";
+    osc2.type = "triangle";
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(1400, now);
 
-    if (type === "up" || type === "naik") {
-      // Nada naik dari A3 (220Hz) ke F4 (349Hz)
-      osc.frequency.setValueAtTime(220, now);
-      osc.frequency.exponentialRampToValueAtTime(349, now + duration - 0.1);
-    } else if (type === "down" || type === "turun") {
-      // Nada turun dari E4 (330Hz) ke G3 (196Hz) - kadens tuntas
-      osc.frequency.setValueAtTime(330, now);
-      osc.frequency.exponentialRampToValueAtTime(196, now + duration - 0.1);
+    gainNode.gain.setValueAtTime(0.0001, now);
+    gainNode.gain.linearRampToValueAtTime(0.28, now + 0.05);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+    const isUp = (type === "up" || type === "naik");
+    const isDown = (type === "down" || type === "turun");
+
+    if (isUp) {
+      // ↗ NADA NAIK: Melodi mengangkat jelas dari nada dada A3 (220Hz) melambung ke F#4 (370Hz)
+      osc1.frequency.setValueAtTime(220, now);
+      osc1.frequency.exponentialRampToValueAtTime(370, now + duration - 0.08);
+
+      osc2.frequency.setValueAtTime(440, now);
+      osc2.frequency.exponentialRampToValueAtTime(740, now + duration - 0.08);
+    } else if (isDown) {
+      // ↘ NADA TURUN: Melodi merendah mantap dan berat dari E4 (329.6Hz) turun tuntas ke F3 (174.6Hz)
+      osc1.frequency.setValueAtTime(329.63, now);
+      osc1.frequency.exponentialRampToValueAtTime(174.61, now + duration - 0.08);
+
+      osc2.frequency.setValueAtTime(659.25, now);
+      osc2.frequency.exponentialRampToValueAtTime(349.23, now + duration - 0.08);
     } else {
-      // Nada datar khidmat di C4 (261.6Hz)
-      osc.frequency.setValueAtTime(261.63, now);
+      // → NADA DATAR: Tenuto sakral khidmat stabil di C4 (261.63Hz)
+      osc1.frequency.setValueAtTime(261.63, now);
+      osc2.frequency.setValueAtTime(523.25, now);
     }
 
-    osc.connect(gain);
-    gain.connect(ctx.destination);
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(ctx.destination);
 
-    osc.start(now);
-    osc.stop(now + duration);
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + duration);
+    osc2.stop(now + duration);
   }
 
-  // Demonstrasi Suara Vokal Pembaca Nyata (Web Speech Synthesis API + Pitch Modulator)
+  // Demonstrasi Suara Vokal Pembaca Nyata (Melodi Pemandu + Jeda Nafas + Vokal Berintonasi)
   speakLectorPhrase(text, pitchType = "naik", onStart = null, onEnd = null) {
     if (!('speechSynthesis' in window)) {
-      // Fallback ke simulasi nada sintetis jika peramban tidak mendukung TTS
       this.playPitchContour(pitchType === "naik" ? "up" : (pitchType === "turun" ? "down" : "flat"));
       if (onEnd) onEnd();
       return;
@@ -167,41 +189,50 @@ export class LiturgicalAudioEngine {
     const cleanPhrase = text.replace(/[\/\;]/g, "").trim();
     if (!cleanPhrase) return;
 
-    // Mainkan frekuensi nada harmonik lembut sebagai pemandu telinga
-    this.playPitchContour(pitchType === "naik" ? "up" : (pitchType === "turun" ? "down" : "flat"), 0.45);
+    if (onStart) onStart();
 
+    // TAHAP 1: Bunyikan melodi nada pemandu (0.6s) agar telinga lektor menangkap frekuensi yang direferensikan
+    this.playPitchContour(pitchType === "naik" ? "up" : (pitchType === "turun" ? "down" : "flat"), 0.65);
+
+    // TAHAP 2: Berikan jeda hening sejenak (0.42s) sebelum suara lektor melafalkan kata-kata
     setTimeout(() => {
       const utterance = new SpeechSynthesisUtterance(cleanPhrase);
       utterance.lang = "id-ID";
 
-      // Pilih suara bahasa Indonesia jika tersedia di sistem
       const voices = window.speechSynthesis.getVoices();
       const idVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith("id"));
       if (idVoice) utterance.voice = idVoice;
 
-      // Pengaturan tempo khidmat liturgis (tidak terburu-buru)
-      utterance.rate = 0.84;
+      const isHeavyWord = /busuk|jijik|bebal|bejat|menyeleweng|kejahatan/i.test(cleanPhrase);
+      const isJoyfulWord = /bersorak|bersukacita|sorak|pujilah|haleluya/i.test(cleanPhrase);
 
-      // Pengaturan kontur intonasi nada naik / turun / datar
-      if (pitchType === "naik") {
-        utterance.pitch = 1.25; // Nada mengangkat di awal kalimat atau sebelum jeda
-      } else if (pitchType === "turun") {
-        utterance.pitch = 0.85; // Kadens merendah mantap di akhir kalimat
+      if (pitchType === "turun") {
+        // Nada merendah, berat, dan sedikit ditekan (sesuai referensi Mazmur 14)
+        utterance.pitch = isHeavyWord ? 0.68 : 0.74;
+        utterance.rate = isHeavyWord ? 0.74 : 0.78;
+      } else if (pitchType === "naik") {
+        // Nada naik cerah, mengangkat, atau puji-pujian
+        utterance.pitch = isJoyfulWord ? 1.35 : 1.28;
+        utterance.rate = isJoyfulWord ? 0.90 : 0.85;
       } else {
-        utterance.pitch = 1.0;  // Datar khidmat
+        // Nada datar khidmat & pengantar formal
+        utterance.pitch = 0.96;
+        utterance.rate = 0.82;
       }
 
-      if (onStart) utterance.onstart = onStart;
-      if (onEnd) {
-        utterance.onend = onEnd;
-        utterance.onerror = onEnd;
-      }
+      utterance.onend = () => {
+        if (onEnd) onEnd();
+      };
+
+      utterance.onerror = () => {
+        if (onEnd) onEnd();
+      };
 
       window.speechSynthesis.speak(utterance);
-    }, 180);
+    }, 450);
   }
 
-  // Demonstrasi Membaca Satu Ayat Penuh dengan Seluruh Jeda Nafas & Kontur Nada
+  // Demonstrasi Membaca Satu Ayat Penuh dengan Harmonisasi Nada Pemandu & Jeda Nafas Nyata
   speakFullVerse(verseText, phrasingData = [], onStart = null, onEnd = null) {
     if (!('speechSynthesis' in window)) {
       alert("Peramban Anda tidak mendukung fitur sintesis vokal pembacaan.");
@@ -215,7 +246,7 @@ export class LiturgicalAudioEngine {
       const clean = verseText.replace(/<[^>]*>/g, "").replace(/[\/\;]/g, " ");
       const u = new SpeechSynthesisUtterance(clean);
       u.lang = "id-ID";
-      u.rate = 0.84;
+      u.rate = 0.82;
       if (onStart) u.onstart = onStart;
       if (onEnd) { u.onend = onEnd; u.onerror = onEnd; }
       window.speechSynthesis.speak(u);
@@ -242,30 +273,46 @@ export class LiturgicalAudioEngine {
         return;
       }
 
-      const u = new SpeechSynthesisUtterance(cleanText);
-      u.lang = "id-ID";
-      const voices = window.speechSynthesis.getVoices();
-      const idVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith("id"));
-      if (idVoice) u.voice = idVoice;
+      const isHeavy = /busuk|jijik|bebal|bejat|menyeleweng|kejahatan/i.test(cleanText);
+      const isJoy = /bersorak|bersukacita|sorak|pujilah|haleluya/i.test(cleanText);
 
-      u.rate = 0.84;
-      if (p.pitchType === "naik") u.pitch = 1.25;
-      else if (p.pitchType === "turun") u.pitch = 0.85;
-      else u.pitch = 1.0;
+      // Mainkan nada pemandu harmonik lembut sebelum frasa
+      this.playPitchContour(p.pitchType === "naik" ? "up" : (p.pitchType === "turun" ? "down" : "flat"), 0.42);
 
-      u.onend = () => {
-        let pauseDuration = 300;
-        if (p.delimiter && p.delimiter.includes("//")) pauseDuration = 700; // Jeda hening panjang
-        else if (p.delimiter && (p.delimiter.includes("/") || p.delimiter.includes(","))) pauseDuration = 400; // Jeda pendek
+      setTimeout(() => {
+        if (isCancelled) return;
+        const u = new SpeechSynthesisUtterance(cleanText);
+        u.lang = "id-ID";
+        const voices = window.speechSynthesis.getVoices();
+        const idVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith("id"));
+        if (idVoice) u.voice = idVoice;
 
-        setTimeout(playNextPhrase, pauseDuration);
-      };
+        if (p.pitchType === "turun") {
+          u.pitch = isHeavy ? 0.68 : 0.74;
+          u.rate = isHeavy ? 0.74 : 0.78;
+        } else if (p.pitchType === "naik") {
+          u.pitch = isJoy ? 1.35 : 1.28;
+          u.rate = isJoy ? 0.90 : 0.85;
+        } else {
+          u.pitch = 0.96;
+          u.rate = 0.82;
+        }
 
-      u.onerror = () => {
-        if (onEnd) onEnd();
-      };
+        u.onend = () => {
+          let pauseDuration = 380;
+          if (p.delimiter && p.delimiter.includes("//")) pauseDuration = 750; // Jeda hening panjang (Caesura)
+          else if (p.delimiter && (p.delimiter.includes("/") || p.delimiter.includes(","))) pauseDuration = 420; // Jeda pendek
+          else if (cleanText.includes("Orang bebal")) pauseDuration = 550; // Jeda sebelum 'Tidak ada Allah'
 
-      window.speechSynthesis.speak(u);
+          setTimeout(playNextPhrase, pauseDuration);
+        };
+
+        u.onerror = () => {
+          if (onEnd) onEnd();
+        };
+
+        window.speechSynthesis.speak(u);
+      }, 260);
     };
 
     playNextPhrase();

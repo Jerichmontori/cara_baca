@@ -127,7 +127,63 @@ export const psalmPresets = [
         intonasi: "Buka dengan nada formal dan tegas pada pengantar. Masuk ke isi firman, turunkan nada menjadi lebih rendah, berat, dan sedikit ditekan. Beri jeda sepersekian detik sebelum frasa 'Tidak ada Allah'. Tekan kata Busuk, jijik, dan tidak ada.",
         ekspresi: "Tatapan tajam, alis sedikit bertaut, mencerminkan rasa keprihatinan yang mendalam atas penyangkalan terhadap Tuhan.",
         penghayatan: "Mencerminkan rasa keprihatinan yang mendalam atas penyangkalan terhadap Tuhan. Rasakan kepedihan batin atas kebobrokan ketika manusia hidup tanpa takut akan Allah.",
-        penampilan: "Berdiri tegak dengan tumpuan seimbang pada kedua kaki, pundak rileks, dan pegang teks setinggi dada agar pandangan tidak terus menunduk. Jaga kontak mata berkala dengan audiens pada setiap jeda kalimat."
+        penampilan: "Berdiri tegak dengan tumpuan seimbang pada kedua kaki, pundak rileks, dan pegang teks setinggi dada agar pandangan tidak terus menunduk. Jaga kontak mata berkala dengan audiens pada setiap jeda kalimat.",
+        phrasingData: [
+          {
+            text: "Untuk pemimpin biduan.",
+            delimiter: "",
+            syllabified: "Un-tuk pe-mim-pin bi-du-an.",
+            pitchType: "datar",
+            pitchIcon: "→",
+            pitchLabel: "Nada Datar-Tegas (Pengantar Formal)",
+            reason: "Buka dengan nada formal dan tegas pada pengantar."
+          },
+          {
+            text: "Dari Daud.",
+            delimiter: "//",
+            syllabified: "Da-ri Da-ud.",
+            pitchType: "datar",
+            pitchIcon: "→",
+            pitchLabel: "Nada Datar-Tegas (Pengantar Daud)",
+            reason: "Nada wibawa tenang; jeda hening // sebelum masuk ke isi firman."
+          },
+          {
+            text: "Orang bebal berkata dalam hatinya:",
+            delimiter: "/",
+            syllabified: "O-rang be-bal ber-ka-ta da-lam ha-ti-nya:",
+            pitchType: "turun",
+            pitchIcon: "↘",
+            pitchLabel: "Nada Merendah Berat (Isi Firman)",
+            reason: "Masuk ke isi firman: turunkan nada menjadi lebih rendah, berat, dan sedikit ditekan."
+          },
+          {
+            text: "'Tidak ada Allah.'",
+            delimiter: "//",
+            syllabified: "'Ti-dak a-da Al-lah.'",
+            pitchType: "turun",
+            pitchIcon: "↘",
+            pitchLabel: "Nada Rendah Prihatin (Penyangkalan)",
+            reason: "Beri jeda sepersekian detik sebelum frasa 'Tidak ada Allah'; lafalkan dengan nada berat mencerminkan keprihatinan atas penyangkalan Tuhan."
+          },
+          {
+            text: "Busuk dan jijik perbuatan mereka,",
+            delimiter: "/",
+            syllabified: "Bu-suk dan ji-jik per-bu-at-an me-re-ka,",
+            pitchType: "turun",
+            pitchIcon: "↘",
+            pitchLabel: "Nada Ditekan Berat (Teguran Prihatin)",
+            reason: "Tekan kata Busuk dan jijik dengan suara berwibawa dari rongga dada."
+          },
+          {
+            text: "tidak ada yang berbuat baik.",
+            delimiter: ".",
+            syllabified: "ti-dak a-da yang ber-bu-at ba-ik.",
+            pitchType: "turun",
+            pitchIcon: "↘",
+            pitchLabel: "Nada Turun Tuntas (Kadens Dakwaan)",
+            reason: "Tekan kata 'tidak ada'; kadens suara merendah mantap dan tuntas di akhir ayat."
+          }
+        ]
       },
       {
         number: 2,

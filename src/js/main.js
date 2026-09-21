@@ -289,11 +289,16 @@ function renderVerseCards(psalm) {
 
                 <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.45rem;">
                   <span class="phrase-pitch-badge pitch-${p.pitchType}">
-                    ${p.pitchIcon} ${p.pitchLabel.split(' ')[0]} ${p.pitchLabel.split(' ')[1] || ''}
+                    ${p.pitchIcon} ${p.pitchLabel}
                   </span>
-                  <button class="btn-play-pitch play-phrase-speech-btn" data-phrase-text="${(p.text || '').replace(/"/g, '&quot;')}" data-pitch-type="${p.pitchType}" title="Dengarkan contoh pelafalan frasa ini dengan intonasi nada ${p.pitchIcon}">
-                    <span>🔊 Contoh Baca (${p.pitchIcon})</span>
-                  </button>
+                  <div style="display: flex; gap: 0.35rem; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
+                    <button class="btn-play-pitch play-melody-btn" data-pitch-type="${p.pitchType}" title="Dengarkan melodi arah nada ${p.pitchIcon} (${p.pitchLabel})">
+                      <span>🎵 Melodi ${p.pitchIcon}</span>
+                    </button>
+                    <button class="btn-play-pitch play-phrase-speech-btn" data-phrase-text="${(p.text || '').replace(/"/g, '&quot;')}" data-pitch-type="${p.pitchType}" title="Dengarkan contoh suara lektor melafalkan frasa ini dengan intonasi ${p.pitchIcon}">
+                      <span>🎙️ Contoh Baca</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             `).join('') : '<p style="color: var(--text-muted); font-size: 0.85rem;">Data pemenggalan frasa sedang disiapkan.</p>'}
@@ -408,6 +413,21 @@ function renderVerseCards(psalm) {
   container.querySelectorAll(".play-verse-chime").forEach(btn => {
     btn.addEventListener("click", () => {
       audioEngine.playSingingBowl(216, 5.0);
+    });
+  });
+
+  // Event listener untuk tombol dengar melodi nada liturgis murni (Web Audio API)
+  container.querySelectorAll(".play-melody-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const pitchType = btn.getAttribute("data-pitch-type") || "naik";
+      
+      // Berikan efek visual aktif sesaat
+      btn.classList.add("is-playing");
+      audioEngine.playPitchContour(pitchType, 0.9);
+      setTimeout(() => {
+        btn.classList.remove("is-playing");
+      }, 900);
     });
   });
 
