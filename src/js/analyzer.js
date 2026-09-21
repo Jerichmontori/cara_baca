@@ -38,93 +38,198 @@ export class PsalmAnalyzer {
     };
   }
 
-  // Parsing teks mentah dari input pengguna menjadi struktur ayat-ayat
+  // Helper konversi angka Romawi (I, II, III, IV, V, dst)
+  romanToInt(roman) {
+    if (!roman) return 0;
+    const map = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
+    let num = 0;
+    const str = roman.toUpperCase();
+    for (let i = 0; i < str.length; i++) {
+      const curr = map[str[i]] || 0;
+      const next = map[str[i + 1]] || 0;
+      if (curr < next) {
+        num += (next - curr);
+        i++;
+      } else {
+        num += curr;
+      }
+    }
+    return num > 0 ? num : 1;
+  }
+
+  // Parsing teks mentah dari input pengguna menjadi struktur ayat-ayat secara akurat & utuh
   parseRawText(rawText, customTitle = "") {
     if (!rawText || !rawText.trim()) {
       throw new Error("Teks mazmur tidak boleh kosong.");
     }
 
-    const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
-    let title = customTitle.trim() || "Bacaan Mazmur";
+    const rawLines = rawText.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+    let title = customTitle.trim();
     let refren = "";
-    let verseItems = [];
+    let contentStartIndex = 0;
 
-    // Deteksi baris pertama jika berupa judul (misal "Mazmur 27" atau "MAZMUR TANGGAPAN")
-    let startIndex = 0;
-    if (lines.length > 0 && /^(mazmur|psalm|bacaan|ulangan|refren)/i.test(lines[0])) {
-      if (/^(refren|ulangan)/i.test(lines[0])) {
-        refren = lines[0].replace(/^(refren|ulangan)\s*[:\-]?\s*/i, "");
-      } else {
-        title = lines[0];
-      }
-      startIndex = 1;
-    }
-
-    // Deteksi refren di baris kedua jika ada
-    if (lines.length > startIndex && /^(refren|ulangan)\s*[:\-]?\s*/i.test(lines[startIndex])) {
-      refren = lines[startIndex].replace(/^(refren|ulangan)\s*[:\-]?\s*/i, "");
-      startIndex++;
-    }
-
-    // Parse ayat-ayat
-    let currentVerseNum = 1;
-    let currentVerseText = "";
-
-    for (let i = startIndex; i < lines.length; i++) {
-      const line = lines[i];
-
-      // Cek apakah baris ini refren di tengah
-      if (/^(refren|ulangan)\s*[:\-]?\s*/i.test(line)) {
-        if (!refren) {
-          refren = line.replace(/^(refren|ulangan)\s*[:\-]?\s*/i, "");
-        }
+    // 1. Scan baris-baris awal untuk Judul dan Refren
+    for (let i = 0; i < rawLines.length; i++) {
+      const l = rawLines[i].trim();
+      if (!l) {
+        if (contentStartIndex === i) contentStartIndex++;
         continue;
       }
 
-      // Pola deteksi nomor ayat: "1.", "1 ", "(1)", "[1]", "Ayat 1:", "1:"
-      const verseMatch = line.match(/^(\[|\(|\b)?(\d+)(\]|\)|\.|\:)?\s*(.*)$/);
-
-      if (verseMatch && verseMatch[2]) {
-        const parsedNum = parseInt(verseMatch[2], 10);
-        const textAfterNum = verseMatch[4] || "";
-
-        if (currentVerseText.trim()) {
-          verseItems.push({
-            number: currentVerseNum,
-            text: currentVerseText.trim()
-          });
+      // Cek apakah baris ini adalah Judul Mazmur di awal
+      const isTitleHeader = /^(?:mazmur\s+tanggapan|bacaan\s+mazmur|mazmur|psalm|mzm\.?)\b.*$/i.test(l);
+      if (isTitleHeader && i < 3 && l.length < 80) {
+        if (!title) {
+          title = l;
         }
-        currentVerseNum = parsedNum;
-        currentVerseText = textAfterNum;
-      } else {
-        // Baris kelanjutan dari ayat sebelumnya
-        if (currentVerseText) {
-          currentVerseText += " " + line;
+        contentStartIndex = i + 1;
+        continue;
+      }
+
+      // Cek apakah baris ini Refren / Ulangan / Antifon
+      const refMatch = l.match(/^(?:refren|ulangan|antifon|refrain)\s*(?:\([^\)]*\))?\s*[:\-]?\s*(.*)$/i);
+      if (refMatch) {
+        if (refMatch[1] && refMatch[1].trim()) {
+          refren = refMatch[1].trim();
+        } else if (i + 1 < rawLines.length) {
+          refren = rawLines[i + 1].trim();
+          i++;
+        }
+        contentStartIndex = i + 1;
+        continue;
+      }
+
+      // Cek apakah baris ini header struktural seperti "Bait:", "Mazmur:", "Solois:"
+      if (/^(?:mazmur|bait|ayat-ayat|bacaan|solois|umat|lektor)\s*[:\-]?$/i.test(l)) {
+        contentStartIndex = i + 1;
+        continue;
+      }
+
+      // Jika sudah menemukan baris ayat / teks biasa, hentikan pencarian header
+      break;
+    }
+
+    const contentLines = rawLines.slice(contentStartIndex);
+
+    // Helper untuk membersihkan baris dari refren yang diulang di tengah teks leksionari
+    const isRepeatedRefren = (l) => {
+      const trimmed = l.trim();
+      if (/^(?:refren|ulangan|antifon|refrain)\s*(?:\([^\)]*\))?\s*[:\-]?/i.test(trimmed)) return true;
+      if (refren && trimmed.toLowerCase() === refren.toLowerCase()) return true;
+      return false;
+    };
+
+    // Helper untuk mendeteksi header penanda struktural non-ayat
+    const isStructuralHeader = (l) => {
+      const trimmed = l.trim();
+      return /^(?:mazmur|bait|ayat-ayat|bacaan|solois|umat|lektor)\s*[:\-]?$/i.test(trimmed);
+    };
+
+    // Cek apakah teks memiliki nomor ayat eksplisit (1., Ayat 1:, Bait 1:, [1], dll)
+    const hasExplicitVerseMarkers = contentLines.some(l => {
+      const trimmed = l.trim();
+      return /^(?:(?:ayat|bait|stanza)\s*(\d+|[ivxlcdm]+)[:\.]?|(\d+)[\.\:\)\/\]\-]\s+|\[\d+\]|\(\d+\))/i.test(trimmed);
+    });
+
+    let verseItems = [];
+
+    if (hasExplicitVerseMarkers) {
+      let currentVerseNum = 1;
+      let currentVerseLines = [];
+
+      for (let i = 0; i < contentLines.length; i++) {
+        const line = contentLines[i];
+        const trimmed = line.trim();
+
+        if (!trimmed) {
+          continue;
+        }
+
+        if (isRepeatedRefren(trimmed) || isStructuralHeader(trimmed)) {
+          continue;
+        }
+
+        const markerMatch = trimmed.match(/^(?:(?:ayat|bait|stanza)\s*(\d+|[ivxlcdm]+)[:\.]?\s*(.*)|(\d+)[\.\:\)\/\]\-]\s+(.*)|\[(\d+)\]\s*(.*)|\((\d+)\)\s*(.*)|(\d+)$)/i);
+
+        if (markerMatch) {
+          if (currentVerseLines.length > 0) {
+            verseItems.push({
+              number: currentVerseNum,
+              text: currentVerseLines.join("\n").trim()
+            });
+            currentVerseLines = [];
+          }
+
+          let numStr = markerMatch[1] || markerMatch[3] || markerMatch[5] || markerMatch[7] || markerMatch[9] || "1";
+          let parsedNum = parseInt(numStr, 10);
+          if (isNaN(parsedNum)) {
+            parsedNum = this.romanToInt(numStr) || (verseItems.length + 1);
+          }
+          currentVerseNum = parsedNum;
+
+          const inlineText = markerMatch[2] || markerMatch[4] || markerMatch[6] || markerMatch[8] || "";
+          if (inlineText.trim()) {
+            currentVerseLines.push(inlineText.trim());
+          }
         } else {
-          currentVerseText = line;
+          // Pertahankan baris baru puisi di dalam ayat secara utuh
+          currentVerseLines.push(trimmed);
         }
+      }
+
+      if (currentVerseLines.length > 0) {
+        verseItems.push({
+          number: currentVerseNum,
+          text: currentVerseLines.join("\n").trim()
+        });
+      }
+    } else {
+      // Tidak ada nomor ayat eksplisit: bagi berdasarkan baris kosong (strophe/bait)
+      let currentBlockLines = [];
+      let verseIndex = 1;
+
+      for (let i = 0; i < contentLines.length; i++) {
+        const line = contentLines[i];
+        const trimmed = line.trim();
+
+        if (isRepeatedRefren(trimmed) || isStructuralHeader(trimmed)) {
+          continue;
+        }
+
+        if (!trimmed) {
+          if (currentBlockLines.length > 0) {
+            verseItems.push({
+              number: verseIndex++,
+              text: currentBlockLines.join("\n").trim()
+            });
+            currentBlockLines = [];
+          }
+        } else {
+          currentBlockLines.push(trimmed);
+        }
+      }
+
+      if (currentBlockLines.length > 0) {
+        verseItems.push({
+          number: verseIndex++,
+          text: currentBlockLines.join("\n").trim()
+        });
       }
     }
 
-    // Push ayat terakhir
-    if (currentVerseText.trim()) {
-      verseItems.push({
-        number: currentVerseNum,
-        text: currentVerseText.trim()
-      });
-    }
-
-    // Jika tidak ada nomor ayat sama sekali, bagi per baris atau per 2 baris
     if (verseItems.length === 0) {
-      verseItems = lines.slice(startIndex).map((l, idx) => ({
-        number: idx + 1,
-        text: l
-      }));
+      const cleanLines = contentLines.map(l => l.trim()).filter(l => l.length > 0);
+      if (cleanLines.length > 0) {
+        verseItems.push({
+          number: 1,
+          text: cleanLines.join("\n")
+        });
+      }
     }
 
     return {
-      title,
-      refren,
+      title: title || "Bacaan Mazmur",
+      refren: refren || "",
       verses: verseItems
     };
   }
@@ -170,39 +275,52 @@ export class PsalmAnalyzer {
     return maxScore > 0 ? maxCat : "trust";
   }
 
-  // Hasilkan anotasi visual (jeda nafas & penekanan kata)
+  // Hasilkan anotasi visual (jeda nafas & penekanan kata) tanpa merusak spasi tanda baca asli
   generateAnnotatedHtml(verseText) {
-    // Sisipkan jeda pendek di koma dan titik koma jika belum ada tanda /
-    let annotated = verseText;
+    if (!verseText) return "";
 
-    // Jika teks belum ada tanda '/' atau '//', berikan bantuan cerdas penempatan nafas liturgis
-    if (!annotated.includes("/") && !annotated.includes("//")) {
-      annotated = annotated
-        .replace(/([;:])\s+/g, " $1 // ")
-        .replace(/([,])\s+/g, " $1 / ")
-        .replace(/(\.\s+)/g, ". // ");
+    let textWithCues = verseText;
+
+    // Jika belum ada tanda jeda '/' atau '//', bantu tempatkan jeda liturgis cerdas
+    const hasUserPauses = textWithCues.includes("/") || textWithCues.includes("//");
+
+    if (!hasUserPauses) {
+      // Sisipkan jeda nafas liturgis TANPA merusak spasi tanda baca asli
+      textWithCues = textWithCues
+        .replace(/([;:])(\s+)/g, '$1 // $2')
+        .replace(/([,])(\s+)/g, '$1 / $2');
     }
 
-    // Temukan kata-kata penting yang pantas diberi stressing (aksentuasi) sesuai TB2
+    // Gunakan token non-tumpang tindih untuk mencegah bug nested tags
+    const LONG_PAUSE_TOKEN = "___LONG_PAUSE___";
+    const SHORT_PAUSE_TOKEN = "___SHORT_PAUSE___";
+
+    let safeText = textWithCues
+      .replace(/\/\//g, LONG_PAUSE_TOKEN)
+      .replace(/(?<![a-zA-Z0-9])\/(?![a-zA-Z0-9])/g, SHORT_PAUSE_TOKEN);
+
+    // Aksentuasi kata sakral TB2
     const highlightWords = [
       "tuhanlah", "tuhan", "allah", "kasih", "setia", "jiwaku", "gembala", "gembalaku", 
       "rahmat", "benteng", "damai", "sukacita", "puji", "pujilah", "sorak", "kebenaran",
       "kekelaman", "fajar", "pengampunan", "selamat", "selama-lamanya", "kudus", 
-      "kurban", "tahir", "demi", "penolongku"
+      "kurban", "tahir", "demi", "penolongku", "bebal", "menilik", "gemetar"
     ];
 
-    // Escape and format
-    let formatted = annotated
-      .replace(/\/\//g, '<span class="breath-long" title="Jeda hening panjang (Caesura)">//</span>')
-      .replace(/(?<!<span[^>]*)\/(?!span>)/g, '<span class="breath-short" title="Jeda nafas pendek">/</span>');
-
-    // Highlight key stress words
     for (const word of highlightWords) {
       const regex = new RegExp(`\\b(${word})\\b`, "gi");
-      formatted = formatted.replace(regex, '<span class="stress-word">$1</span>');
+      safeText = safeText.replace(regex, '<span class="stress-word">$1</span>');
     }
 
-    return formatted;
+    // Gantikan token jeda dengan HTML bersih
+    safeText = safeText
+      .replace(new RegExp(LONG_PAUSE_TOKEN, "g"), '<span class="breath-long" title="Jeda hening panjang (Caesura)">//</span>')
+      .replace(new RegExp(SHORT_PAUSE_TOKEN, "g"), '<span class="breath-short" title="Jeda nafas pendek">/</span>');
+
+    // Konversi baris baru menjadi <br> agar bait puisi tetap rapi sesuai input asli
+    safeText = safeText.replace(/\n/g, '<br>\n');
+
+    return safeText;
   }
 
   // Analisis keseluruhan (Macro Analysis)
@@ -374,8 +492,11 @@ export class PsalmAnalyzer {
 
     // Analisis Penggalan Suku Kata dan Arah Nada (Naik / Turun / Datar)
     const phrasingData = analyzePhrasingAndPitch(text, index, totalVerses, category);
-    const words = text.split(/\s+/);
-    const syllableText = words.map(w => syllabifyWord(w)).join(" ");
+    const textLines = text.split(/\r?\n/);
+    const syllableText = textLines.map(line => {
+      const words = line.split(/\s+/).filter(w => w.length > 0);
+      return words.map(w => syllabifyWord(w)).join(" ");
+    }).join("\n");
 
     return {
       number: verseNum,

@@ -377,31 +377,46 @@ export function analyzePhrasingAndPitch(verseText, verseIndex, totalVerses, psal
   // Bersihkan tag html jika ada
   const cleanText = verseText.replace(/<[^>]*>/g, "");
 
-  // Pisahkan frasa berdasarkan pembatas liturgis: //, /, ;, :, koma, titik, tanda tanya
-  // Kita jaga urutan pembatas agar tahu konteks intonasi
-  const rawPhrases = cleanText
-    .split(/(\/\/|\/|;|\?|\.|\!|,)/)
-    .map(p => p.trim())
-    .filter(p => p.length > 0);
+  const hasExplicitPauses = cleanText.includes("//") || cleanText.includes("/");
+
+  let rawTokens = [];
+  if (hasExplicitPauses) {
+    // Jika naskah sudah memiliki penanda jeda // atau /, gunakan penanda tersebut + baris baru
+    rawTokens = cleanText
+      .split(/(\/\/|\/|\r?\n)/g)
+      .filter(p => p !== undefined && p !== "");
+  } else {
+    // Jika teks polos tanpa tanda // atau /, bagi berdasarkan baris baru dan tanda baca utama dengan aman
+    rawTokens = cleanText
+      .split(/(\r?\n|;|:|\?|\!|(?:\.|\,)(?:['"”’]+)?(?:\s+|$))/g)
+      .filter(p => p !== undefined && p !== "");
+  }
 
   let mergedPhrases = [];
   let currentBuffer = "";
 
-  for (let i = 0; i < rawPhrases.length; i++) {
-    const chunk = rawPhrases[i];
-    if (["//", "/", ";", "?", ".", "!", ","].includes(chunk)) {
+  for (let i = 0; i < rawTokens.length; i++) {
+    const chunk = rawTokens[i];
+    const isDelim = hasExplicitPauses 
+      ? /^(\/\/|\/|\r?\n)$/.test(chunk)
+      : /^(\r?\n|;|:|\?|\!|(?:\.|\,)(?:['"”’]+)?(?:\s+|$))$/.test(chunk);
+
+    if (isDelim) {
+      const cleanDelim = chunk.trim() || "/";
       if (currentBuffer.trim()) {
         mergedPhrases.push({
           text: currentBuffer.trim(),
-          delimiter: chunk
+          delimiter: cleanDelim
         });
         currentBuffer = "";
       } else if (mergedPhrases.length > 0) {
-        // Tambahkan delimiter ke frasa sebelumnya jika ada
-        mergedPhrases[mergedPhrases.length - 1].delimiter += " " + chunk;
+        mergedPhrases[mergedPhrases.length - 1].delimiter += " " + cleanDelim;
       }
     } else {
-      currentBuffer += (currentBuffer ? " " : "") + chunk;
+      const trimmed = chunk.trim();
+      if (trimmed) {
+        currentBuffer += (currentBuffer ? " " : "") + trimmed;
+      }
     }
   }
 
@@ -412,10 +427,12 @@ export function analyzePhrasingAndPitch(verseText, verseIndex, totalVerses, psal
     });
   }
 
+  const validPhrases = mergedPhrases.filter(p => p.text.length > 0 && !/^['"”’\s]+$/.test(p.text));
+
   // Evaluasi Kontur Nada per Frasa
-  return mergedPhrases.map((item, idx) => {
+  return validPhrases.map((item, idx) => {
     const isFirstPhrase = idx === 0;
-    const isLastPhrase = idx === mergedPhrases.length - 1;
+    const isLastPhrase = idx === validPhrases.length - 1;
     const delim = item.delimiter;
     const lowerText = item.text.toLowerCase();
 
