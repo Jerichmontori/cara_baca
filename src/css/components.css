@@ -1572,3 +1572,294 @@
   pointer-events: auto;
 }
 
+/* ------------------------------------------------------------- */
+/* STUDIO PEREKAMAN & AUDIT SUARA LEKTOR (PANEL EVALUASI) */
+/* ------------------------------------------------------------- */
+.eval-recording-banner {
+  background: linear-gradient(135deg, rgba(18, 25, 44, 0.95), rgba(11, 16, 29, 0.98));
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius-lg);
+  padding: 1.6rem 1.85rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(212, 175, 55, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.eval-recording-banner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #d4af37, #ef4444, #38bdf8, #d4af37);
+  background-size: 200% 100%;
+}
+
+.eval-recording-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.eval-rec-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1;
+  min-width: 280px;
+}
+
+.eval-rec-pulse-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid var(--gold-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.55rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.eval-rec-title {
+  font-family: var(--font-heading);
+  font-size: 1.28rem;
+  color: var(--gold-light);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.eval-rec-subtitle {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  max-width: 780px;
+}
+
+.eval-source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.95rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.eval-source-badge.badge-template {
+  background: rgba(234, 179, 8, 0.12);
+  color: #fef08a;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.eval-source-badge.badge-recorded {
+  background: rgba(34, 197, 94, 0.18);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.45);
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+}
+
+.eval-source-badge.badge-recording {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.6);
+  animation: pulse-rec 1.2s infinite;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.eval-rec-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--gold-border-subtle);
+}
+
+.eval-rec-btn-cluster {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-rec-trigger {
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.35);
+  font-weight: 700;
+}
+
+.btn-rec-trigger.is-recording {
+  background: #dc2626 !important;
+  animation: pulse-rec 1.2s infinite;
+}
+
+.eval-rec-meter-cluster {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: rgba(8, 12, 22, 0.65);
+  padding: 0.45rem 1.15rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.eval-timer-tag {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f87171;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 85px;
+}
+
+.eval-volume-gauge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.gauge-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.gauge-bar-bg {
+  width: 120px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.gauge-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+  border-radius: var(--radius-full);
+  transition: width 0.08s ease-out;
+}
+
+/* Audit Dashboard Card */
+.eval-audit-dashboard {
+  margin-top: 1.5rem;
+  padding: 1.35rem 1.5rem;
+  background: rgba(10, 15, 28, 0.85);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.audit-player-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--gold-border-subtle);
+}
+
+.audit-player-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.audit-player-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--gold-light);
+}
+
+.eval-audio-player {
+  height: 36px;
+  max-width: 320px;
+  border-radius: var(--radius-full);
+}
+
+.audit-player-right {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.audit-timestamp-badge {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-sm);
+}
+
+.audit-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.85rem;
+}
+
+.audit-metric-pill {
+  background: rgba(17, 24, 39, 0.9);
+  border: 1px solid var(--gold-border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: var(--transition-fast);
+}
+
+.audit-metric-pill:hover {
+  border-color: var(--gold-primary);
+  background: rgba(26, 36, 60, 0.95);
+  transform: translateY(-2px);
+}
+
+.audit-metric-label {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.audit-metric-val {
+  font-family: var(--font-mono);
+  font-size: 1.38rem;
+  font-weight: 800;
+  color: var(--gold-light);
+  line-height: 1.2;
+}
+
+.audit-metric-sub {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+

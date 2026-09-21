@@ -115,6 +115,144 @@ export class VAIEPPEvaluator {
       penghayatan: 4,
       penampilan: 5
     };
+
+    // Menyimpan data laporan rekaman nyata terakhir dari client
+    this.lastRecordingReport = null;
+    this.recordedFindings = {};
+  }
+
+  // Evaluasi Otomatis Berdasarkan Rekaman Suara Nyata Client
+  evaluateFromRecording(analysisReport, currentPsalm) {
+    if (!analysisReport || !currentPsalm) return;
+
+    this.lastRecordingReport = analysisReport;
+
+    const verses = currentPsalm.verses || [];
+    const allPsalmText = verses.map(v => v.rawText).join(" ");
+    const cleanPsalmWords = allPsalmText.replace(/[\/\;\:\.\,\?\!\'\"]/g, " ").toLowerCase().split(/\s+/).filter(w => w.length > 0);
+    const totalPsalmWords = cleanPsalmWords.length || 60;
+
+    // 1. Hitung Tempo Membaca Nyata (WPM)
+    const durationMinutes = Math.max(0.15, analysisReport.durationSeconds / 60);
+    const wpm = Math.round(totalPsalmWords / durationMinutes);
+
+    // 2. Analisis Transkripsi Kata & Artikulasi Nyata (Web Speech API)
+    const spokenWords = (analysisReport.transcribedText || "")
+      .toLowerCase()
+      .replace(/[\.\,\?\!\'\"]/g, " ")
+      .split(/\s+/)
+      .filter(w => w.length > 0);
+
+    let matchCount = 0;
+    const keySacredWords = ["tuhan", "tuhanlah", "bebal", "menilik", "gemetar", "allah", "busuk", "jijik", "bejat", "keselamatan", "bersorak-sorak", "bersukacita", "kasihanilah", "gembalaku", "kekurangan", "perbuatan", "menyeleweng"];
+    const matchedKeyWords = [];
+    const missedKeyWords = [];
+
+    cleanPsalmWords.forEach(pw => {
+      if (spokenWords.includes(pw)) {
+        matchCount++;
+        if (keySacredWords.includes(pw) && !matchedKeyWords.includes(pw)) {
+          matchedKeyWords.push(pw);
+        }
+      } else {
+        if (keySacredWords.includes(pw) && !missedKeyWords.includes(pw)) {
+          missedKeyWords.push(pw);
+        }
+      }
+    });
+
+    // Jika Speech Recognition tidak didukung/kosong, perkirakan dari durasi dan stabilitas
+    let wordAccuracyPct = 85;
+    if (spokenWords.length > 0) {
+      wordAccuracyPct = Math.min(100, Math.round((matchCount / totalPsalmWords) * 100));
+    } else {
+      wordAccuracyPct = Math.min(95, Math.max(65, analysisReport.volumeStability));
+    }
+
+    // 3. Kalkulasi Skor Nyata 6 Pilar VAIEPP dari Rekaman
+
+    // A. VOKAL (Berdasarkan stabilitas nafas & dinamika volume RMS)
+    let vokalScore = 4;
+    const stability = analysisReport.volumeStability || 75;
+    if (stability >= 86) vokalScore = 5;
+    else if (stability >= 76) vokalScore = 4;
+    else if (stability >= 64) vokalScore = 3;
+    else vokalScore = 2;
+
+    // B. ARTIKULASI (Berdasarkan akurasi pelafalan kata TB2)
+    let artikulasiScore = 4;
+    if (wordAccuracyPct >= 90) artikulasiScore = 5;
+    else if (wordAccuracyPct >= 80) artikulasiScore = 4;
+    else if (wordAccuracyPct >= 68) artikulasiScore = 3;
+    else artikulasiScore = 2;
+
+    // C. INTONASI (Berdasarkan tempo WPM & keteraturan jeda nafas)
+    let intonasiScore = 4;
+    if (wpm >= 64 && wpm <= 86 && analysisReport.longPausesCount >= 2) {
+      intonasiScore = 5; // Tempo liturgis sempurna & jeda hening sakral ditaati
+    } else if (wpm >= 55 && wpm <= 96) {
+      intonasiScore = 4;
+    } else if (wpm > 105) {
+      intonasiScore = 2; // Terlalu terburu-buru
+    } else if (wpm < 50) {
+      intonasiScore = 3; // Terlalu lambat
+    } else {
+      intonasiScore = 3;
+    }
+
+    // D. EKSPRESI (Berdasarkan variasi dinamika vokal)
+    let ekspresiScore = 4;
+    if (intonasiScore >= 4 && vokalScore >= 4 && analysisReport.silenceCount >= 4) {
+      ekspresiScore = 5;
+    } else if (intonasiScore <= 2) {
+      ekspresiScore = 3;
+    }
+
+    // E. PENGHAYATAN (Berdasarkan kedalaman jeda kontemplatif pada klimaks)
+    let penghayatanScore = 4;
+    if (analysisReport.longPausesCount >= 2 && analysisReport.durationSeconds >= (totalPsalmWords / 90) * 60) {
+      penghayatanScore = 5;
+    } else if (wpm > 100) {
+      penghayatanScore = 2; // Membaca cepat tanpa penghayatan rasa
+    }
+
+    // F. PENAMPILAN & WIBAWA MIMBAR (Berdasarkan hening awal 2 detik & hening akhir)
+    let penampilanScore = 4;
+    if (analysisReport.initialPauseSec >= 1.2 && analysisReport.finalSilenceSec >= 1.2) {
+      penampilanScore = 5; // Mengambil sikap hening agung sebelum dan sesudah membaca
+    } else if (analysisReport.initialPauseSec < 0.5) {
+      penampilanScore = 3; // Langsung berucap tergesa-gesa tanpa jeda persiapan
+    }
+
+    // Simpan skor baru hasil rekaman
+    this.scores = {
+      vokal: vokalScore,
+      artikulasi: artikulasiScore,
+      intonasi: intonasiScore,
+      ekspresi: ekspresiScore,
+      penghayatan: penghayatanScore,
+      penampilan: penampilanScore
+    };
+
+    // Simpan temuan spesifik rekaman
+    this.recordedFindings = {
+      wpm,
+      wordAccuracyPct,
+      stability,
+      matchedKeyWords,
+      missedKeyWords,
+      durationSeconds: analysisReport.durationSeconds,
+      silenceCount: analysisReport.silenceCount,
+      longPausesCount: analysisReport.longPausesCount,
+      shortPausesCount: analysisReport.shortPausesCount || 0,
+      initialPauseSec: analysisReport.initialPauseSec,
+      finalSilenceSec: analysisReport.finalSilenceSec,
+      audioUrl: analysisReport.audioUrl,
+      isSimulation: analysisReport.isSimulation || false,
+      recordedAt: analysisReport.recordedAt || new Date()
+    };
+
+    return this.calculateTotal();
   }
 
   setScore(id, value) {
@@ -163,16 +301,20 @@ export class VAIEPPEvaluator {
       maxScore,
       rank,
       badgeClass,
-      summaryText
+      summaryText,
+      hasRecordedData: !!this.lastRecordingReport,
+      recordedFindings: this.recordedFindings
     };
   }
 
-  // Diagnosis Mendalam yang Menghubungkan Kesalahan dengan Teks Mazmur Aktif
+  // Diagnosis Mendalam yang Menghubungkan Kesalahan dengan Data Rekaman & Teks Mazmur Aktif
   getDeepDiagnostics(currentPsalm) {
     if (!currentPsalm || !currentPsalm.verses) return [];
 
     const verses = currentPsalm.verses;
     const totalVerses = verses.length;
+    const rf = this.recordedFindings;
+    const hasRec = !!this.lastRecordingReport;
 
     return this.criteria.map(c => {
       const score = this.scores[c.id];
@@ -185,55 +327,61 @@ export class VAIEPPEvaluator {
 
       switch (c.id) {
         case "vokal":
-          // Cari ayat terpanjang atau ayat dengan dinamika forte/piano ekstrem
           const longestVerse = verses.reduce((max, v) => (v.rawText.length > max.rawText.length ? v : max), verses[0]);
           targetVerseNum = longestVerse.number;
           targetPhrase = longestVerse.rawText.split(/[//,;.]/)[0].trim() || longestVerse.rawText.slice(0, 45);
-          criticalReason = `Pada Ayat ${targetVerseNum} ("${targetPhrase}..."), kalimat yang panjang sering menyebabkan lektor kehabisan nafas di paruh kedua sehingga nada suara melemah atau tercekat.`;
+          criticalReason = hasRec
+            ? `Pada rekaman Anda (${rf.durationSeconds}s), stabilitas nafas tercatat ${rf.stability}%. Pada Ayat ${targetVerseNum} ("${targetPhrase}..."), kalimat yang panjang berisiko membuat nafas diafragma habis di paruh kedua sehingga suara melemah.`
+            : `Pada Ayat ${targetVerseNum} ("${targetPhrase}..."), kalimat yang panjang sering menyebabkan lektor kehabisan nafas di paruh kedua sehingga nada suara melemah atau tercekat.`;
           break;
 
         case "artikulasi":
-          // Cari ayat dengan konsonan padat atau kata sakral penting
           const artVerse = verses.find(v => /takkan|kekurangan|tahirkanlah|bersorak|memperhitungkan|sembelihan|bebal|menilik|gemetar/i.test(v.rawText)) || verses[0];
           targetVerseNum = artVerse.number;
           const matchWord = artVerse.rawText.match(/\b(TUHANlah|takkan|kekurangan|tahirkanlah|bersorak-sorailah|memperhitungkan|kurban|sembelihan|perisai|bebal|menilik|gemetar)\b/i);
-          const wordStr = matchWord ? matchWord[0] : "kata-kata penting";
+          const wordStr = matchWord ? matchWord[0] : "kata-kata sakral";
           targetPhrase = `Kata '${wordStr}' pada Ayat ${targetVerseNum}`;
-          criticalReason = `Pada Ayat ${targetVerseNum} khususnya kata '${wordStr}', pembaca sering menelan suku kata akhir atau merapatkan bibir terlalu cepat sehingga artikulasi tidak terdengar jelas di baris belakang.`;
+          criticalReason = hasRec
+            ? `Akurasi diksi TB2 rekaman Anda: ${rf.wordAccuracyPct}%. ${rf.missedKeyWords && rf.missedKeyWords.length > 0 ? `Kata '${rf.missedKeyWords[0]}' terdengar tertelan.` : `Pada '${wordStr}', letupkan konsonan letup lebih tajam agar tembus ke bangku gereja belakang.`}`
+            : `Pada Ayat ${targetVerseNum} khususnya kata '${wordStr}', pembaca sering menelan suku kata akhir atau merapatkan bibir terlalu cepat sehingga artikulasi tidak terdengar jelas di baris belakang.`;
           break;
 
         case "intonasi":
-          // Cari ayat yang memiliki jeda hening // atau tanda tanya
           const intVerse = verses.find(v => v.rawText.includes("//") || v.rawText.includes("?")) || verses[1] || verses[0];
           targetVerseNum = intVerse.number;
           targetPhrase = intVerse.rawText.split("//")[0].trim() || intVerse.rawText.slice(0, 45);
-          criticalReason = `Pada Ayat ${targetVerseNum} di sekitar jeda sakral, lektor sering menaikkan nada secara keliru (gaya bertanya) atau mengabaikan jeda nafas, sehingga alur melodi menjadi datar dan terburu-buru.`;
+          criticalReason = hasRec
+            ? `Tempo membaca rekaman Anda: ${rf.wpm} kata/menit dengan ${rf.silenceCount} jeda hening. ${rf.wpm > 95 ? 'Kurangi kecepatan agar tidak terkesan membaca berita koran.' : (rf.wpm < 55 ? 'Tingkatkan sedikit aliran nafas agar tidak tersendat.' : 'Pertahankan tempo khidmat ini.')}`
+            : `Pada Ayat ${targetVerseNum} di sekitar jeda sakral, lektor sering menaikkan nada secara keliru (gaya bertanya) atau mengabaikan jeda nafas, sehingga alur melodi menjadi datar dan terburu-buru.`;
           break;
 
         case "ekspresi":
-          // Cari ayat dengan pergolakan emosi (misal ada kata kekelaman, musuh, atau syukur)
           const expVerse = verses.find(v => /kekelaman|musuh|kasihanilah|sukacita|fajar|sayap/i.test(v.rawText)) || verses[Math.floor(totalVerses / 2)] || verses[0];
           targetVerseNum = expVerse.number;
           targetPhrase = expVerse.rawText.slice(0, 50);
-          criticalReason = `Pada Ayat ${targetVerseNum} ("${targetPhrase}..."), raut wajah sering kali tidak berubah (terlalu datar), padahal teks menuntut peralihan mikro-ekspresi dari kegentaran menuju keteduhan iman.`;
+          criticalReason = hasRec
+            ? `Pada Ayat ${targetVerseNum} ("${targetPhrase}..."), rekaman suara Anda menunjukkan peralihan rasa batin. Pastikan mikro-ekspresi wajah Anda selaras saat transisi dari nada teguran ke sukacita.`
+            : `Pada Ayat ${targetVerseNum} ("${targetPhrase}..."), raut wajah sering kali tidak berubah (terlalu datar), padahal teks menuntut peralihan mikro-ekspresi dari kegentaran menuju keteduhan iman.`;
           break;
 
         case "penghayatan":
-          // Cari ayat klimaks mazmur (biasanya ayat kedua terakhir atau terakhir)
           const climaxVerse = totalVerses > 2 ? verses[totalVerses - 2] : verses[totalVerses - 1];
           targetVerseNum = climaxVerse.number;
           targetPhrase = climaxVerse.rawText.slice(0, 50);
-          criticalReason = `Pada Ayat ${targetVerseNum} ("${targetPhrase}..."), pembaca sering terjebak melafalkan teks secara mekanis tanpa mengizinkan rasa syukur dan keharuan batin bergetar di dalam dada.`;
+          criticalReason = hasRec
+            ? `Terdeteksi ${rf.longPausesCount} kali jeda hening panjang (//) dalam rekaman Anda. Pada Ayat ${targetVerseNum} ("${targetPhrase}..."), pastikan keharuan sabda dihayati mendalam sebelum mengucapkannya.`
+            : `Pada Ayat ${targetVerseNum} ("${targetPhrase}..."), pembaca sering terjebak melafalkan teks secara mekanis tanpa mengizinkan rasa syukur dan keharuan batin bergetar di dalam dada.`;
           break;
 
         case "penampilan":
         default:
-          // Pembukaan ayat 1 dan penutup ayat terakhir
           const firstVerse = verses[0];
           const lastVerse = verses[totalVerses - 1];
           targetVerseNum = firstVerse.number;
           targetPhrase = `Pembukaan Ayat 1 dan Penutupan Ayat ${lastVerse.number}`;
-          criticalReason = `Pada detik awal melangkah ke mimbar (Ayat 1) dan saat mengakhiri ayat terakhir (Ayat ${lastVerse.number}), pembaca sering langsung berucap tanpa jeda hening 2 detik, atau terburu-buru berbalik badan sebelum sabda meresap di hati umat.`;
+          criticalReason = hasRec
+            ? `Ketenangan awal Anda sebelum bersuara tercatat ${rf.initialPauseSec} detik (${rf.initialPauseSec >= 1.5 ? 'sangat matang & agung' : 'perlu dilatih agar tidak langsung berucap sebelum tenang'}). Hening penutup tercatat ${rf.finalSilenceSec} detik.`
+            : `Pada detik awal melangkah ke mimbar (Ayat 1) dan saat mengakhiri ayat terakhir (Ayat ${lastVerse.number}), pembaca sering langsung berucap tanpa jeda hening 2 detik, atau terburu-buru berbalik badan sebelum sabda meresap di hati umat.`;
           break;
       }
 

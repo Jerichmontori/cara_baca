@@ -830,36 +830,74 @@ function initTeleprompter() {
 }
 
 // -------------------------------------------------------------
-// AUDIO REHEARSAL RECORDER
+// AUDIO REHEARSAL RECORDER & AUDIT STUDIO
 // -------------------------------------------------------------
 function initAudioRecorder() {
-  const recBtn = document.getElementById("btn-teleprompter-rec");
-  const timerDisplay = document.getElementById("rec-timer-display");
-  const audioPreview = document.getElementById("rehearsal-audio-player");
-  const evalLinkBtn = document.getElementById("btn-eval-recording");
+  const prompterRecBtn = document.getElementById("btn-teleprompter-rec");
+  const prompterTimer = document.getElementById("rec-timer-display");
+  const prompterAudio = document.getElementById("rehearsal-audio-player");
+  const prompterEvalBtn = document.getElementById("btn-eval-recording");
+
+  // Tab 4 (Evaluasi Studio) Elements
+  const evalRecBtn = document.getElementById("btn-eval-record-toggle");
+  const evalRecIcon = document.getElementById("eval-rec-icon");
+  const evalRecLabel = document.getElementById("eval-rec-label");
+  const evalTimer = document.getElementById("eval-timer-num");
+  const evalVolumeFill = document.getElementById("eval-volume-fill");
+  const evalSourceBadge = document.getElementById("eval-rec-source-badge");
+  const evalSourceText = document.getElementById("eval-rec-source-text");
+  const btnEvalSimulate = document.getElementById("btn-eval-simulate");
+  const btnEvalGoPrompter = document.getElementById("btn-eval-go-prompter");
+  const btnEvalRerecord = document.getElementById("btn-eval-rerecord");
+  const btnReapply = document.getElementById("btn-reapply-recorded");
 
   rehearsalRecorder = new AudioRehearsalRecorder(
+    // 1. On Timer Tick
     (timerStr) => {
-      if (timerDisplay) timerDisplay.textContent = timerStr;
+      if (prompterTimer) prompterTimer.textContent = timerStr;
+      if (evalTimer) evalTimer.textContent = timerStr;
     },
-    (state, url) => {
+    // 2. On State Change
+    (state, url, analysis) => {
       if (state === "recording") {
-        if (recBtn) recBtn.classList.add("recording");
-        if (audioPreview) audioPreview.classList.remove("active");
-        if (evalLinkBtn) evalLinkBtn.style.display = "none";
+        if (prompterRecBtn) prompterRecBtn.classList.add("recording");
+        if (prompterAudio) prompterAudio.classList.remove("active");
+        if (prompterEvalBtn) prompterEvalBtn.style.display = "none";
+
+        if (evalRecBtn) evalRecBtn.classList.add("is-recording");
+        if (evalRecIcon) evalRecIcon.textContent = "⏹️";
+        if (evalRecLabel) evalRecLabel.textContent = "Selesai & Analisis Rekaman";
+        if (evalSourceBadge) evalSourceBadge.className = "eval-source-badge badge-recording";
+        if (evalSourceText) evalSourceText.textContent = "Sedang Merekam Suara Lektor...";
       } else if (state === "stopped") {
-        if (recBtn) recBtn.classList.remove("recording");
-        if (audioPreview && url) {
-          audioPreview.src = url;
-          audioPreview.classList.add("active");
+        if (prompterRecBtn) prompterRecBtn.classList.remove("recording");
+        if (prompterAudio && url) {
+          prompterAudio.src = url;
+          prompterAudio.classList.add("active");
         }
-        if (evalLinkBtn) evalLinkBtn.style.display = "inline-flex";
+        if (prompterEvalBtn) prompterEvalBtn.style.display = "inline-flex";
+
+        if (evalRecBtn) evalRecBtn.classList.remove("is-recording");
+        if (evalRecIcon) evalRecIcon.textContent = "🔴";
+        if (evalRecLabel) evalRecLabel.textContent = "Mulai Rekam Pembacaan Saya";
+        if (evalVolumeFill) evalVolumeFill.style.width = "0%";
+
+        if (analysis) {
+          applyAnalysisToEvaluation(analysis, false);
+        }
+      }
+    },
+    // 3. On Live Volume Level (0 - 100 RMS)
+    (volumeLevel) => {
+      if (evalVolumeFill) {
+        evalVolumeFill.style.width = `${volumeLevel}%`;
       }
     }
   );
 
-  if (recBtn) {
-    recBtn.addEventListener("click", async () => {
+  // Tab 3 Prompter Rec Button
+  if (prompterRecBtn) {
+    prompterRecBtn.addEventListener("click", async () => {
       if (rehearsalRecorder.isRecording) {
         rehearsalRecorder.stopRecording();
       } else {
@@ -868,86 +906,242 @@ function initAudioRecorder() {
     });
   }
 
-  if (evalLinkBtn) {
-    evalLinkBtn.addEventListener("click", () => {
+  if (prompterEvalBtn) {
+    prompterEvalBtn.addEventListener("click", () => {
       switchTab("panel-eval");
     });
   }
+
+  // Tab 4 Studio Rec Toggle Button
+  if (evalRecBtn) {
+    evalRecBtn.addEventListener("click", async () => {
+      if (rehearsalRecorder.isRecording) {
+        rehearsalRecorder.stopRecording();
+      } else {
+        const started = await rehearsalRecorder.startRecording();
+        if (started) {
+          showToast("🔴 Perekaman suara dimulai! Bacalah Mazmur dengan tenang & khidmat.", "🎙️");
+        }
+      }
+    });
+  }
+
+  // Tab 4 Re-record Button
+  if (btnEvalRerecord) {
+    btnEvalRerecord.addEventListener("click", async () => {
+      if (rehearsalRecorder.isRecording) {
+        rehearsalRecorder.stopRecording();
+      } else {
+        const started = await rehearsalRecorder.startRecording();
+        if (started) {
+          showToast("🔴 Merekam ulang! Bacalah teks mazmur untuk mengoreksi nilai Anda.", "🎙️");
+        }
+      }
+    });
+  }
+
+  // Tab 4 Simulate Button (Fallback Demo / Non-mic environments)
+  if (btnEvalSimulate) {
+    btnEvalSimulate.addEventListener("click", () => {
+      const simReport = rehearsalRecorder.simulateRecording(currentPsalm);
+      applyAnalysisToEvaluation(simReport, true);
+    });
+  }
+
+  // Tab 4 Go to Prompter Button
+  if (btnEvalGoPrompter) {
+    btnEvalGoPrompter.addEventListener("click", () => {
+      switchTab("panel-teleprompter");
+      showToast("Gunakan mikrofon di atas untuk merekam sambil membaca naskah yang bergulir.", "📜");
+    });
+  }
+
+  // Tab 4 Re-apply Recorded Scores Button
+  if (btnReapply) {
+    btnReapply.addEventListener("click", () => {
+      if (evaluator.lastRecordingReport) {
+        evaluator.evaluateFromRecording(evaluator.lastRecordingReport, currentPsalm);
+        syncSlidersWithEvaluator();
+        const originBadge = document.getElementById("eval-score-origin-badge");
+        if (originBadge) {
+          originBadge.textContent = "Skor Rekaman Suara Asli";
+          originBadge.className = "badge badge-praise";
+        }
+        updateEvaluationSummary();
+        showToast("↺ Skor diselaraskan kembali ke hasil rekaman suara Anda!", "🎙️");
+      }
+    });
+  }
 }
 
-// -------------------------------------------------------------
-// RUBRIK EVALUASI MANDIRI (VAIEPP)
-// -------------------------------------------------------------
-function initEvaluatorUI() {
-  const listContainer = document.getElementById("eval-sliders-container");
-  if (!listContainer) return;
-
-  let html = "";
-  evaluator.criteria.forEach(c => {
-    html += `
-      <div class="macro-box" style="margin-bottom: 1rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-          <div style="font-weight: 700; color: var(--gold-light); font-size: 0.95rem;">
-            ${c.icon} ${c.label}
-          </div>
-          <div style="font-family: var(--font-mono); font-weight: 800; color: #fff; font-size: 1.1rem;" id="score-val-${c.id}">
-            ${evaluator.scores[c.id]} / 5
-          </div>
-        </div>
-        <p style="font-size: 0.84rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
-          ${c.desc}
-        </p>
-        <input type="range" min="1" max="5" value="${evaluator.scores[c.id]}" class="eval-range-slider" data-criteria-id="${c.id}" style="width: 100%; accent-color: var(--gold-primary);">
-      </div>
-    `;
-  });
-
-  listContainer.innerHTML = html;
-
-  listContainer.querySelectorAll(".eval-range-slider").forEach(slider => {
-    slider.addEventListener("input", (e) => {
-      const id = e.target.getAttribute("data-criteria-id");
-      const val = parseInt(e.target.value, 10);
-      evaluator.setScore(id, val);
-
+// Sinkronkan Posisi Slider dengan Skor Evaluator
+function syncSlidersWithEvaluator() {
+  document.querySelectorAll(".eval-range-slider").forEach(sl => {
+    const id = sl.getAttribute("data-criteria-id");
+    if (evaluator.scores[id] !== undefined) {
+      sl.value = evaluator.scores[id];
       const valLabel = document.getElementById(`score-val-${id}`);
-      if (valLabel) valLabel.textContent = `${val} / 5`;
-
-      updateEvaluationSummary();
-    });
+      if (valLabel) valLabel.textContent = `${evaluator.scores[id]} / 5`;
+    }
   });
-
-  const btnSimulate = document.getElementById("btn-simulate-perfect");
-  const btnReset = document.getElementById("btn-reset-eval");
-
-  if (btnSimulate) {
-    btnSimulate.addEventListener("click", () => {
-      evaluator.setAllScores(5);
-      document.querySelectorAll(".eval-range-slider").forEach(sl => {
-        sl.value = 5;
-        const id = sl.getAttribute("data-criteria-id");
-        const valLabel = document.getElementById(`score-val-${id}`);
-        if (valLabel) valLabel.textContent = "5 / 5";
-      });
-      updateEvaluationSummary();
-    });
-  }
-
-  if (btnReset) {
-    btnReset.addEventListener("click", () => {
-      evaluator.scores = { vokal: 4, artikulasi: 4, intonasi: 3, ekspresi: 4, penghayatan: 4, penampilan: 5 };
-      document.querySelectorAll(".eval-range-slider").forEach(sl => {
-        const id = sl.getAttribute("data-criteria-id");
-        sl.value = evaluator.scores[id];
-        const valLabel = document.getElementById(`score-val-${id}`);
-        if (valLabel) valLabel.textContent = `${evaluator.scores[id]} / 5`;
-      });
-      updateEvaluationSummary();
-    });
-  }
-
-  updateEvaluationSummary();
 }
+
+// Terapkan Laporan Analisis Rekaman Suara ke Panel Evaluasi Mandiri
+function applyAnalysisToEvaluation(analysisReport, isSimulation = false) {
+  if (!analysisReport) return;
+
+  // 1. Jalankan kalkulasi obyektif VAIEPP dari rekaman suara nyata
+  const evalResult = evaluator.evaluateFromRecording(analysisReport, currentPsalm);
+
+  // 2. Sinkronkan slider dengan skor hasil rekaman
+  syncSlidersWithEvaluator();
+
+  // 3. Tampilkan dashboard hasil audit
+  const auditDashboard = document.getElementById("eval-audit-dashboard");
+  if (auditDashboard) auditDashboard.style.display = "block";
+
+  // 4. Update pemutar audio
+  const audioPlayer = document.getElementById("eval-audio-player");
+  if (audioPlayer) {
+    if (analysisReport.audioUrl) {
+      audioPlayer.src = analysisReport.audioUrl;
+      audioPlayer.style.display = "block";
+    } else {
+      audioPlayer.style.display = "none";
+    }
+  }
+
+  // 5. Update label timestamp & sumber skor
+  const timestampLabel = document.getElementById("audit-timestamp-label");
+  if (timestampLabel) {
+    const timeStr = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    timestampLabel.textContent = isSimulation 
+      ? `⚡ Simulasi Audio (${timeStr})`
+      : `🎙️ Rekaman Asli (${timeStr})`;
+  }
+
+  const sourceBadge = document.getElementById("eval-rec-source-badge");
+  const sourceText = document.getElementById("eval-rec-source-text");
+  if (sourceBadge && sourceText) {
+    sourceBadge.className = isSimulation ? "eval-source-badge badge-template" : "eval-source-badge badge-recorded";
+    sourceText.textContent = isSimulation
+      ? "Status: Berdasarkan Simulasi Audio Realistis"
+      : "Status: 100% Berdasarkan Hasil Rekaman Suara Anda";
+  }
+
+  const originBadge = document.getElementById("eval-score-origin-badge");
+  if (originBadge) {
+    originBadge.textContent = isSimulation ? "Skor Simulasi Rekaman" : "Skor Rekaman Suara Asli";
+    originBadge.className = isSimulation ? "badge badge-trust" : "badge badge-praise";
+  }
+
+  const subtitleEl = document.getElementById("eval-slider-subtitle");
+  if (subtitleEl) {
+    subtitleEl.innerHTML = `Skor di bawah ini telah diselaraskan secara obyektif dari analisis rekaman suara Anda (${analysisReport.durationSeconds}s, ${evalResult.recordedFindings.wpm} WPM, ${evalResult.recordedFindings.wordAccuracyPct}% akurasi diksi TB2).`;
+  }
+
+  const btnReapply = document.getElementById("btn-reapply-recorded");
+  if (btnReapply) btnReapply.style.display = "inline-flex";
+
+  // 6. Render 5 Pilar Metrik Akustik & Diksi
+  renderAuditMetricsGrid(analysisReport, evalResult.recordedFindings);
+
+  // 7. Update ringkasan, rank, & diagnosa mendalam
+  updateEvaluationSummary();
+
+  // 8. Notifikasi toast
+  if (isSimulation) {
+    showToast("⚡ Simulasi rekaman selesai! Evaluasi dihitung dari parameter audio liturgis realistis.", "⚡");
+  } else {
+    showToast("✅ Rekaman berhasil dianalisis! Skor 6 pilar VAIEPP diselaraskan dari suara Anda.", "🎙️");
+  }
+}
+
+// Render 5 Kotak Metrik Akustik & Fonetik
+function renderAuditMetricsGrid(report, rf) {
+  const container = document.getElementById("audit-metrics-row");
+  if (!container || !rf) return;
+
+  const wpmStatus = rf.wpm >= 65 && rf.wpm <= 85 
+    ? `<span style="color: #34d399; font-weight: 700;">✓ Ideal Liturgis</span>` 
+    : (rf.wpm > 85 ? `<span style="color: #f87171; font-weight: 700;">⚠️ Terlalu Cepat</span>` : `<span style="color: #fbbf24; font-weight: 700;">⚠️ Agak Lambat</span>`);
+
+  const diksiStatus = rf.wordAccuracyPct >= 85 
+    ? `<span style="color: #34d399; font-weight: 700;">✓ Sangat Fasih</span>`
+    : `<span style="color: #fbbf24; font-weight: 700;">Perlu Penajaman</span>`;
+
+  const stabilitasStatus = rf.stability >= 80 
+    ? `<span style="color: #34d399; font-weight: 700;">✓ Stabil & Bulat</span>`
+    : `<span style="color: #fbbf24; font-weight: 700;">Fluktuatif</span>`;
+
+  const heningStatus = rf.initialPauseSec >= 1.2 && rf.finalSilenceSec >= 1.2
+    ? `<span style="color: #34d399; font-weight: 700;">✓ Hening Agung</span>`
+    : `<span style="color: #fbbf24; font-weight: 700;">Perlu Lebih Tenang</span>`;
+
+  container.innerHTML = `
+    <!-- Metric 1: WPM & Durasi -->
+    <div class="audit-metric-pill">
+      <div class="audit-metric-label">
+        <span>⏱️</span>
+        <span>Tempo & Durasi</span>
+      </div>
+      <div class="audit-metric-val">${rf.wpm} <span style="font-size: 0.85rem; font-weight: normal; color: var(--text-muted);">WPM</span></div>
+      <div class="audit-metric-sub">
+        Durasi total <strong>${rf.durationSeconds} detik</strong> • ${wpmStatus}
+      </div>
+    </div>
+
+    <!-- Metric 2: Jeda Sakral Liturgis -->
+    <div class="audit-metric-pill">
+      <div class="audit-metric-label">
+        <span>⏸️</span>
+        <span>Jeda Sakral (// & /)</span>
+      </div>
+      <div class="audit-metric-val">${rf.longPausesCount} <span style="font-size: 0.85rem; font-weight: normal; color: var(--text-muted);">Caesura</span></div>
+      <div class="audit-metric-sub">
+        Total <strong>${rf.silenceCount} jeda hening</strong> (${rf.shortPausesCount || 0} jeda nafas pendek)
+      </div>
+    </div>
+
+    <!-- Metric 3: Akurasi Diksi TB2 -->
+    <div class="audit-metric-pill">
+      <div class="audit-metric-label">
+        <span>🗣️</span>
+        <span>Kecocokan Diksi TB2</span>
+      </div>
+      <div class="audit-metric-val">${rf.wordAccuracyPct}%</div>
+      <div class="audit-metric-sub">
+        ${diksiStatus} • ${rf.matchedKeyWords && rf.matchedKeyWords.length > 0 ? `Kata kunci: <em>${rf.matchedKeyWords.slice(0, 2).join(", ")}</em>` : 'Pelafalan terverifikasi'}
+      </div>
+    </div>
+
+    <!-- Metric 4: Stabilitas Vokal RMS -->
+    <div class="audit-metric-pill">
+      <div class="audit-metric-label">
+        <span>🌊</span>
+        <span>Stabilitas Vokal</span>
+      </div>
+      <div class="audit-metric-val">${rf.stability}%</div>
+      <div class="audit-metric-sub">
+        ${stabilitasStatus} • Resonansi rongga diafragma
+      </div>
+    </div>
+
+    <!-- Metric 5: Ketenangan Mimbar -->
+    <div class="audit-metric-pill">
+      <div class="audit-metric-label">
+        <span>🏛️</span>
+        <span>Ketenangan Mimbar</span>
+      </div>
+      <div class="audit-metric-val">${rf.initialPauseSec}s / ${rf.finalSilenceSec}s</div>
+      <div class="audit-metric-sub">
+        ${heningStatus} • Hening awal & akhir sakral
+      </div>
+    </div>
+  `;
+}
+
+
 
 function updateEvaluationSummary() {
   const result = evaluator.calculateTotal();
