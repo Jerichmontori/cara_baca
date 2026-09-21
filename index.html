@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BERMAZMUR - Studio Panduan & Penghayatan Pembacaan Mazmur</title>
+  <meta name="description" content="Aplikasi pelatihan pemazmur dan lektor gereja untuk menguasai penghayatan teks per ayat, psikologi teks, suasana batin, raut wajah, gestur, serta teknik Vokal, Artikulasi, Intonasi, Ekspresi, Penghayatan, dan Penampilan (VAIEPP).">
+  
+  <!-- Google Fonts: Cinzel, Playfair Display, Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <script type="module" crossorigin src="./assets/index-CT0UDvwb.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DuY5JU_9.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="brand-area">
+        <div class="brand-icon">
+          <span>📜</span>
+        </div>
+        <div>
+          <h1 class="brand-title">BERMAZMUR</h1>
+          <p class="brand-subtitle">Studio Penghayatan Mazmur • Standar Terjemahan Baru 2 (TB2)</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btn-open-picker" class="btn btn-primary" title="Buka Pustaka Mazmur atau masukkan naskah baru">
+          <span>📖</span>
+          <span>Pustaka Mazmur</span>
+          <span id="header-library-count" class="badge badge-gold" style="font-size: 0.72rem; padding: 0.15rem 0.5rem; background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.2);">6</span>
+        </button>
+        <button id="btn-print-sheet" class="btn btn-outline" title="Cetak lembar panduan lektor untuk mimbar">
+          <span>🖨️</span>
+          <span>Cetak Lembar Lektor</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Psalm Banner & Macro Character Analysis -->
+    <section class="psalm-banner" id="psalm-banner-section">
+      <div class="psalm-header-top">
+        <div id="psalm-tags-container" class="psalm-tags">
+          <!-- Diisi otomatis oleh JavaScript -->
+        </div>
+
+        <div style="display: flex; gap: 0.6rem;">
+          <button id="btn-banner-warmup" class="btn btn-burgundy btn-sm">
+            <span>🕊️</span>
+            <span>Pemanasan Batin & Vokal</span>
+          </button>
+          <button id="btn-banner-teleprompter" class="btn btn-outline btn-sm">
+            <span>🎙️</span>
+            <span>Mode Latihan Mimbar</span>
+          </button>
+        </div>
+      </div>
+
+      <h2 id="psalm-main-title" class="psalm-title-main">Mazmur 23</h2>
+      <p id="psalm-main-subtitle" class="psalm-subtitle">TUHAN adalah Gembalaku yang Baik</p>
+
+      <!-- Macro 4-Grid: Karakter & Suasana Batin Teks -->
+      <div class="macro-grid" id="macro-grid-container">
+        <!-- Diisi otomatis oleh JavaScript -->
+      </div>
+    </section>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="tab-btn" data-target="panel-warmup" role="tab">
+        <span>🕊️</span>
+        <span>1. Olah Rasa & Pemanasan</span>
+      </button>
+      <button class="tab-btn active" data-target="panel-verses" role="tab">
+        <span>📖</span>
+        <span>2. Cara Baca (Bedah Ayat)</span>
+        <span class="tab-badge" id="tab-verse-count">VAIEPP</span>
+      </button>
+      <button class="tab-btn" data-target="panel-teleprompter" role="tab">
+        <span>🎙️</span>
+        <span>3. Mode Latihan Mimbar</span>
+      </button>
+      <button class="tab-btn" data-target="panel-eval" role="tab">
+        <span>⭐</span>
+        <span>4. Evaluasi Mandiri</span>
+      </button>
+    </nav>
+
+    <!-- ========================================================= -->
+    <!-- PANEL 1: OLAH RASA & PEMANASAN PRA-MEMBACA -->
+    <!-- ========================================================= -->
+    <section id="panel-warmup" class="section-panel">
+      <div class="warmup-grid">
+
+        <!-- Kiri: Olah Nafas Liturgis Interaktif -->
+        <div class="warmup-card">
+          <div class="warmup-card-header">
+            <h3 class="warmup-card-title">
+              <span>💨</span>
+              <span>Olah Nafas Liturgis (Pola 4-4-6)</span>
+            </h3>
+            <button id="btn-singing-bowl" class="btn btn-outline btn-sm" title="Bunyikan mangkuk genta">
+              🔔 Mangkuk Doa
+            </button>
+          </div>
+
+          <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.5rem;">
+            Pernapasan diafragma menstabilkan getaran suara, menurunkan ketegangan panggung, dan memberi wibawa kudus pada setiap kata yang terucap.
+          </p>
+
+          <div class="breathing-box" id="breathing-box">
+            <div class="breathing-circle-outer">
+              <div class="breathing-circle-inner">
+                <span class="breath-phase-text" id="breath-phase-text">Siap Mulai</span>
+                <span class="breath-timer-text" id="breath-timer-text">4s</span>
+              </div>
+            </div>
+
+            <p class="breath-instruction-text" id="breath-instruction-text">
+              Tekan tombol "Mulai Latihan Nafas" untuk menenangkan denyut jantung dan mengaktifkan diafragma.
+            </p>
+
+            <div class="breath-controls">
+              <button id="btn-toggle-breath" class="btn btn-primary">
+                Mulai Latihan Nafas
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kanan: Olah Vokal, Artikulasi & Hening Batin -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+          <!-- Card Olah Vokal & Artikulasi -->
+          <div class="warmup-card">
+            <div class="warmup-card-header">
+              <h3 class="warmup-card-title">
+                <span>🗣️</span>
+                <span>Olah Vokal & Kelenturan Diksi</span>
+              </h3>
+            </div>
+
+            <div class="drill-list">
+              <div class="drill-item">
+                <div class="drill-item-head">
+                  <div class="drill-name">🎙️ Resonansi Rongga Dada (Chest Tone)</div>
+                  <span class="badge badge-gold" style="font-size: 0.7rem;">VOKAL</span>
+                </div>
+                <div class="drill-desc">Buka tenggorokan seperti saat hendak menguap. Bunyikan humming dengung lembut pada dada Anda.</div>
+                <div class="drill-phonetic-box">"Hmmmmmm... Haaaaa... Hooooo..."</div>
+              </div>
+
+              <div class="drill-item">
+                <div class="drill-item-head">
+                  <div class="drill-name">👄 Senam Bibir & Lidah (Motor Roll)</div>
+                  <span class="badge badge-trust" style="font-size: 0.7rem;">ARTIKULASI</span>
+                </div>
+                <div class="drill-desc">Getarkan bibir rileks untuk melenturkan otot artikulator sebelum berbicara di depan umat.</div>
+                <div class="drill-phonetic-box">"Brrrr... Trrrr... Prrrr..."</div>
+              </div>
+
+              <div class="drill-item">
+                <div class="drill-item-head">
+                  <div class="drill-name">✨ Diksi Konsonan Sakral</div>
+                  <span class="badge badge-praise" style="font-size: 0.7rem;">KEJELASAN</span>
+                </div>
+                <div class="drill-desc">Gigit konsonan awal dan akhir dengan tajam dan bersih. Hindari menelan bunyi akhiran.</div>
+                <div class="drill-phonetic-box">"TU-HAN - KASIH - JALAN - KEBENARAN - KUDUS"</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Olah Rasa & Meditasi Teks -->
+          <div class="warmup-card">
+            <div class="warmup-card-header">
+              <h3 class="warmup-card-title">
+                <span>🕊️</span>
+                <span>Olah Rasa & Penyelarasan Jiwa</span>
+              </h3>
+            </div>
+
+            <div class="contemplation-box">
+              <div class="contemplation-quote" id="contemplation-quote-text">
+                "Tutup mata Anda sejenak. Rasakan hembusan nafas Anda. Lepaskan semua beban kepanikan dan ketegangan bahu Anda. Anda bukanlah pembaca yang menuntut, melainkan saksi yang merasakan sendiri betapa amannya berada di bawah naungan Tuhan."
+              </div>
+              <div style="font-size: 0.82rem; color: var(--gold-light); display: flex; align-items: center; gap: 0.4rem;">
+                <span>💡</span>
+                <span>Koneksikan hati Anda dengan tema mazmur ini sebelum melangkah ke mimbar.</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- PANEL 2: BEDAH AYAT DEMI AYAT (VAIEPP DEEP DIVE) -->
+    <!-- ========================================================= -->
+    <section id="panel-verses" class="section-panel active">
+
+      <!-- Banner Menu Cara Baca & Panduan Nada Referensi -->
+      <div class="cara-baca-banner" style="background: rgba(212, 175, 55, 0.08); border: 1px solid var(--gold-border); border-radius: var(--radius-md); padding: 1.1rem 1.35rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.85rem;">
+        <div>
+          <div style="font-weight: 700; color: var(--gold-light); font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span>📖</span>
+            <span>Menu Panduan Cara Baca Mazmur (Bedah Ayat demi Ayat)</span>
+          </div>
+          <p style="font-size: 0.84rem; color: var(--text-secondary); margin-top: 0.35rem; line-height: 1.45;">
+            Latih intonasi sabda dengan mendengarkan <strong>🎵 Melodi</strong> (notasi tangga nada liturgis murni), <strong>🎙️ Contoh Baca</strong> (contoh lafal vokal dengan psikologi teks), atau <strong>Contoh Baca Ayat Penuh</strong> dengan jeda nafas nyata.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.45rem; font-size: 0.75rem; flex-wrap: wrap; align-items: center;">
+          <span class="pitch-cue pitch-datar">→ Datar-Formal</span>
+          <span class="pitch-cue pitch-turun-berat">↘ Merendah Berat</span>
+          <span class="pitch-cue pitch-turun-dingin">↘ Dingin-Hampa</span>
+          <span class="pitch-cue pitch-turun-tuntas">↘ Kadens Tuntas</span>
+          <span class="pitch-cue pitch-naik">↗ Nada Naik</span>
+          <span class="pitch-cue pitch-naik-sorak">↗ Sorak Sukacita</span>
+        </div>
+      </div>
+
+      <!-- Progress Tracking Bar -->
+      <div class="progress-bar-container">
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <span style="font-size: 1.1rem;">🎯</span>
+          <div>
+            <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--gold-primary); font-weight: 700; letter-spacing: 0.05em;">Progres Latihan Mazmur</div>
+            <div id="progress-count-text" style="font-size: 0.92rem; font-weight: 700; color: #fff;">0 dari 6 ayat telah dilatih (0%)</div>
+          </div>
+        </div>
+
+        <div class="progress-track" style="max-width: 420px;">
+          <div class="progress-fill" id="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Quick Verse Selector Pills -->
+      <div class="verse-pills-nav" id="verse-pills">
+        <!-- Diisi otomatis oleh JavaScript -->
+      </div>
+
+      <!-- Container Kartu Tiap Ayat -->
+      <div id="verse-cards-container">
+        <!-- Diisi otomatis oleh JavaScript -->
+      </div>
+
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- PANEL 3: MODE LATIHAN MIMBAR & TELEPROMPTER INTERAKTIF -->
+    <!-- ========================================================= -->
+    <section id="panel-teleprompter" class="section-panel">
+      <div class="teleprompter-container">
+
+        <!-- Toolbar Mimbar -->
+        <div class="teleprompter-toolbar">
+          <div class="teleprompter-controls-left">
+            <button id="btn-prompter-scroll" class="btn btn-outline btn-sm">
+              ▶ Gulir Otomatis
+            </button>
+            <button id="btn-prompter-reset" class="btn btn-outline btn-sm" title="Kembali ke atas">
+              ⏮ Ke Atas
+            </button>
+            <div class="speed-control">
+              <span>Kecepatan:</span>
+              <input type="range" id="prompter-speed-slider" class="speed-slider" min="1" max="5" value="2">
+            </div>
+          </div>
+
+          <!-- Integrated Audio Recorder -->
+          <div class="teleprompter-recorder">
+            <button id="btn-teleprompter-rec" class="rec-btn" title="Mulai / Berhenti Merekam Latihan Suara">
+              🎙️
+            </button>
+            <span id="rec-timer-display" class="rec-timer">00:00</span>
+            <audio id="rehearsal-audio-player" class="audio-preview-player" controls></audio>
+            <button id="btn-eval-recording" class="btn btn-outline btn-sm" style="display: none;">
+              ⭐ Evaluasi Hasil Rekaman
+            </button>
+          </div>
+
+          <div class="teleprompter-controls-right">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Ukuran Teks:</span>
+            <button id="btn-font-minus" class="btn btn-outline btn-sm btn-icon-only" title="Perkecil teks">A-</button>
+            <button id="btn-font-plus" class="btn btn-outline btn-sm btn-icon-only" title="Perbesar teks">A+</button>
+          </div>
+        </div>
+
+        <!-- Teleprompter Reading Canvas -->
+        <div class="teleprompter-screen" id="teleprompter-screen">
+          <!-- Diisi otomatis oleh JavaScript -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- PANEL 4: EVALUASI MANDIRI (RUBRIK VAIEPP) -->
+    <!-- ========================================================= -->
+    <section id="panel-eval" class="section-panel">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+
+        <!-- Kiri: Slider Penilaian 6 Pilar -->
+        <div class="warmup-card">
+          <div class="warmup-card-header">
+            <h3 class="warmup-card-title">
+              <span>⭐</span>
+              <span>Rubrik Penilaian Mandiri VAIEPP</span>
+            </h3>
+          </div>
+          <p style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+            Dengarkan kembali rekaman latihan suara Anda di tab Mode Mimbar, lalu berikan penilaian jujur (skala 1 - 5) untuk setiap pilar di bawah ini.
+          </p>
+
+          <div id="eval-sliders-container">
+            <!-- Diisi otomatis oleh JavaScript -->
+          </div>
+        </div>
+
+        <!-- Kanan: Hasil & Rekomendasi Coaching -->
+        <div class="warmup-card">
+          <div class="warmup-card-header">
+            <h3 class="warmup-card-title">
+              <span>🏆</span>
+              <span>Hasil & Rekomendasi Pelatih</span>
+            </h3>
+          </div>
+
+          <div style="text-align: center; padding: 1.75rem 1rem; border-bottom: 1px solid var(--gold-border-subtle); margin-bottom: 1.5rem;">
+            <div id="eval-rank-badge" class="badge badge-trust" style="font-size: 0.95rem; padding: 0.5rem 1.25rem; margin-bottom: 1rem;">
+              Lektor Berwibawa & Berjiwa
+            </div>
+            <div id="eval-percentage-text" style="font-family: var(--font-mono); font-size: 2.8rem; font-weight: 800; color: var(--gold-light); line-height: 1;">
+              80% (24/30)
+            </div>
+            <p id="eval-summary-desc" style="font-size: 0.92rem; color: var(--text-secondary); margin-top: 1rem; line-height: 1.5;">
+              Sangat baik! Penguasaan materi dan penghayatan Anda sudah sangat menyentuh. Lakukan sedikit pemolesan pada pilar dengan skor terendah untuk mencapai kesempurnaan liturgis.
+            </p>
+          </div>
+
+          <div>
+            <h4 style="font-size: 0.85rem; text-transform: uppercase; color: var(--gold-primary); font-weight: 700; margin-bottom: 0.85rem; letter-spacing: 0.05em;">
+              💡 Area Prioritas Pembenahan:
+            </h4>
+            <ul id="eval-weak-areas" style="font-size: 0.88rem; line-height: 1.55; padding-left: 0.5rem;">
+              <!-- Diisi otomatis oleh JavaScript -->
+            </ul>
+          </div>
+
+          <div style="margin-top: 2rem; padding: 1.25rem; background: rgba(14, 20, 34, 0.6); border-radius: var(--radius-md); border: 1px solid var(--gold-border-subtle);">
+            <div style="font-weight: 700; color: var(--gold-light); font-size: 0.9rem; margin-bottom: 0.35rem;">
+              📜 Petuah Emas Pembacaan Mazmur
+            </div>
+            <p style="font-size: 0.84rem; color: var(--text-muted); line-height: 1.45;">
+              "Bukan kepandaian bersandiwara yang menyentuh hati umat, melainkan ketulusan jiwa pembaca yang telah lebih dahulu disentuh oleh firman yang dibawakannya."
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- BEDAH KESALAHAN CARA MEMBACA & RESEP NILAI SEMPURNA -->
+      <!-- ========================================================= -->
+      <div class="diagnostics-wrapper">
+        <div class="diagnostics-header">
+          <div>
+            <h3 class="diagnostics-title">
+              <span>🔬</span>
+              <span>Bedah Kesalahan Cara Membaca & Panduan Menuju Nilai Sempurna (100%)</span>
+            </h3>
+            <p style="font-size: 0.86rem; color: var(--text-secondary); margin-top: 0.35rem;">
+              Analisis spesifik: apa yang harus diperbaiki dari cara membaca, di bagian teks mana kesalahan terjadi, dan langkah teknis untuk meraih nilai 5/5 sempurna.
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+            <button id="btn-simulate-perfect" class="btn btn-primary btn-sm" title="Simulasi seluruh nilai 5/5 untuk melihat standar masterclass">
+              <span>⭐</span>
+              <span>Simulasi Nilai Sempurna (100%)</span>
+            </button>
+            <button id="btn-reset-eval" class="btn btn-outline btn-sm" title="Kembalikan penilaian ke default">
+              <span>🔄</span>
+              <span>Reset Penilaian</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Container Kartu Diagnosis Tiap Pilar -->
+        <div class="diag-grid" id="eval-diagnostics-container">
+          <!-- Diisi otomatis oleh JavaScript -->
+        </div>
+      </div>
+
+    </section>
+
+  </div> <!-- End .app-container -->
+
+  <!-- ========================================================= -->
+  <!-- FLOATING SOUNDBAR: AMBIENT MEDITASI & GENTA -->
+  <!-- ========================================================= -->
+  <div class="floating-soundbar">
+    <button id="btn-ambient-drone" class="sound-toggle-btn" title="Nyalakan/matikan suara ambient hening batin">
+      <span>🔇</span>
+      <span>Ambient Hening Batin (Mati)</span>
+    </button>
+    <div style="width: 1px; height: 18px; background: rgba(255,255,255,0.2);"></div>
+    <button id="btn-floating-chime" class="sound-toggle-btn" title="Bunyikan mangkuk genta sekarang">
+      <span>🔔</span>
+      <span>Genta Hening</span>
+    </button>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL: PILIH PRESET ATAU MASUKKAN MAZMUR BARU -->
+  <!-- ========================================================= -->
+  <div class="modal-backdrop" id="modal-psalm-picker">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <span style="font-size: 1.5rem;">📚</span>
+          <div>
+            <h3 class="modal-title" style="margin-bottom: 0.1rem;">Daftar Pustaka Mazmur</h3>
+            <p style="font-size: 0.78rem; color: var(--text-muted);">Pilih mazmur dari pustaka atau masukkan naskah baru untuk otomatis disimpan</p>
+          </div>
+        </div>
+        <button id="btn-close-picker" class="close-btn" title="Tutup modal">✕</button>
+      </div>
+
+      <!-- Pustaka Mazmur Kustom / Tersimpan -->
+      <div class="form-group" style="margin-bottom: 1.75rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.65rem;">
+          <label class="form-label" style="margin-bottom: 0; display: flex; align-items: center; gap: 0.45rem;">
+            <span>⭐</span>
+            <span>Pustaka Mazmur Saya (Otomatis Tersimpan):</span>
+          </label>
+          <span id="custom-psalms-count-badge" class="badge badge-trust" style="font-size: 0.72rem;">0 Naskah</span>
+        </div>
+        <div class="preset-grid" id="custom-psalm-cards-container">
+          <!-- Diisi otomatis oleh JavaScript -->
+        </div>
+      </div>
+
+      <!-- Pustaka Preset Masterclass TB2 Resmi -->
+      <div class="form-group" style="margin-bottom: 1.75rem;">
+        <label class="form-label" style="margin-bottom: 0.65rem; display: flex; align-items: center; gap: 0.45rem;">
+          <span>🏛️</span>
+          <span>Pustaka Preset Masterclass (Standar Alkitab TB2 - LAI):</span>
+        </label>
+        <div class="preset-grid" id="preset-cards-container">
+          <!-- Diisi otomatis oleh JavaScript -->
+        </div>
+      </div>
+
+      <div style="text-align: center; margin: 1.5rem 0; color: var(--text-muted); font-size: 0.85rem; position: relative;">
+        <span style="background: var(--bg-surface); padding: 0 1rem; position: relative; z-index: 1;">ATAU MASUKKAN MAZMUR BARU (OTOMATIS MASUK PUSTAKA)</span>
+        <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--gold-border-subtle); z-index: 0;"></div>
+      </div>
+
+      <!-- Input Custom Mazmur -->
+      <div class="form-group">
+        <label for="input-custom-title" class="form-label">Judul / Perikop Mazmur:</label>
+        <input type="text" id="input-custom-title" class="form-input" placeholder="Contoh: Mazmur 27 - TUHANlah Terangku dan Keselamatanku">
+      </div>
+
+      <div class="form-group">
+        <label for="input-custom-text" class="form-label">
+          Teks Bacaan Mazmur (Salin & Tempel di sini):
+        </label>
+        <textarea id="input-custom-text" class="form-textarea" placeholder="Contoh naskah Mazmur (TB2):
+Refren: TUHANlah terangku dan keselamatanku.
+1. TUHANlah terangku dan keselamatanku, kepada siapakah aku harus takut?
+2. TUHANlah benteng hidupku, terhadap siapakah aku harus gemetar?
+3. Satu hal telah kuminta kepada TUHAN, itulah yang kuingini: diam di rumah TUHAN seumur hidupku..."></textarea>
+        <div style="background: rgba(14, 165, 233, 0.08); border-left: 3px solid #38bdf8; padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); margin-top: 0.6rem; font-size: 0.82rem; color: #bae6fd; line-height: 1.45;">
+          💾 <strong>Otomatis Ditambahkan ke Pustaka:</strong> Naskah Mazmur yang Anda masukkan akan langsung dibedah (psikologi teks, nada batin, penggalan suku kata, kontur nada, & panduan VAIEPP) dan <strong>secara otomatis tersimpan di Pustaka Mazmur Saya</strong> sehingga dapat dibuka kembali sewaktu-waktu.
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+        <button id="btn-run-analysis" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">
+          ✦ Analisis & Otomatis Simpan ke Pustaka
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toast Notification -->
+  <div id="app-toast" class="app-toast" role="alert" aria-live="polite"></div>
+
+  <!-- Vite entry script -->
+</body>
+</html>
