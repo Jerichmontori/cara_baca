@@ -429,7 +429,7 @@ export function analyzePhrasingAndPitch(verseText, verseIndex, totalVerses, psal
     let pitchLabel = "Nada Naik";
     let reason = "";
 
-    // 1. Pengantar Formal & Judul Mazmur -> Nada Datar-Tegas
+    // 1. Pengantar Formal & Judul Mazmur -> Nada Datar-Formal
     if (
       lowerText.startsWith("untuk pemimpin") || 
       lowerText.startsWith("dari daud") || 
@@ -438,39 +438,34 @@ export function analyzePhrasingAndPitch(verseText, verseIndex, totalVerses, psal
     ) {
       pitchType = "datar";
       pitchIcon = "→";
-      pitchLabel = "Nada Datar-Tegas (Pengantar Formal)";
+      pitchLabel = "Nada Datar-Formal (Pengantar Judul)";
       reason = "Buka dengan nada formal dan tegas pada pengantar judul mazmur.";
     }
-    // 2. Teguran Berat & Keprihatinan Moral (misal: Mazmur 14) -> Nada Merendah Berat / Ditekan
+    // 2. Nada Dingin & Hampa (Penyangkalan Rohani / Atheisme Praktis)
+    else if (
+      lowerText.includes("tidak ada allah") || 
+      lowerText.includes("tiada allah")
+    ) {
+      pitchType = "turun-dingin";
+      pitchIcon = "↘";
+      pitchLabel = "Nada Dingin & Hampa (Penyangkalan)";
+      reason = "Tekankan kata dengan nada dingin dan hampa, mencerminkan kekosongan rohani orang fasik.";
+    }
+    // 3. Teguran Berat & Keprihatinan Moral -> Nada Merendah Berat & Tertahan
     else if (
       lowerText.includes("orang bebal") || 
-      lowerText.includes("tidak ada allah") || 
       lowerText.includes("busuk") || 
       lowerText.includes("jijik") || 
       lowerText.includes("bejat") || 
       lowerText.includes("menyeleweng") ||
-      lowerText.includes("kejahatan") ||
-      lowerText.includes("tidak ada yang berbuat baik")
+      lowerText.includes("kejahatan")
     ) {
-      pitchType = "turun";
+      pitchType = "turun-berat";
       pitchIcon = "↘";
-      pitchLabel = "Nada Merendah Berat (Teguran Prihatin)";
-      reason = "Masuk ke isi firman: turunkan nada menjadi lebih rendah, berat, dan sedikit ditekan mencerminkan keprihatinan mendalam.";
+      pitchLabel = "Nada Merendah Berat & Tertahan";
+      reason = "Turunkan nada batin, gunakan vokal agak berat dan tertahan untuk memancarkan keprihatinan moral mendalam.";
     }
-    // 3. Tanda tanya (?) atau gugatan reflektif -> Nada Naik
-    else if (
-      delim.includes("?") || 
-      lowerText.startsWith("mengapa") || 
-      lowerText.startsWith("bilakah") || 
-      lowerText.startsWith("siapakah") ||
-      lowerText.startsWith("tidak sadarkah")
-    ) {
-      pitchType = "naik";
-      pitchIcon = "↗";
-      pitchLabel = "Nada Naik (Pertanyaan / Gugatan Reflektif)";
-      reason = "Infleksi nada meninggi pada suku kata akhir untuk menggugah nurani dan permenungan batin umat.";
-    }
-    // 4. Frasa puji-pujian, sorak-sorai, atau sukacita kemenangan -> Nada Naik Bertenaga
+    // 4. Frasa puji-pujian, sorak-sorai, atau sukacita kemenangan -> Nada Naik Sorak Kemenangan
     else if (
       lowerText.includes("bersorak") || 
       lowerText.includes("bersukacita") || 
@@ -479,12 +474,25 @@ export function analyzePhrasingAndPitch(verseText, verseIndex, totalVerses, psal
       lowerText.includes("haleluya") ||
       lowerText.includes("sorak-sorai")
     ) {
-      pitchType = "naik";
+      pitchType = "naik-sorak";
       pitchIcon = "↗";
-      pitchLabel = "Nada Naik (Sorak Sukacita Kemenangan)";
-      reason = "Melodi melambung cerah dan bersemangat melepaskan sukacita perayaan keselamatan iman.";
+      pitchLabel = "Melambung Sorak Kemenangan";
+      reason = "Melodi melambung cerah dan bersemangat melepaskan sukacita perayaan kemenangan keselamatan iman.";
     }
-    // 5. Frasa permohonan / ratapan / remuk hati / lembah maut -> Nada Turun / Merendah Khusyuk
+    // 5. Tanda tanya (?) atau gugatan reflektif -> Nada Tanya Menggugat
+    else if (
+      delim.includes("?") || 
+      lowerText.startsWith("mengapa") || 
+      lowerText.startsWith("bilakah") || 
+      lowerText.startsWith("siapakah") ||
+      lowerText.startsWith("tidak sadarkah")
+    ) {
+      pitchType = "pertanyaan";
+      pitchIcon = "↗";
+      pitchLabel = "Nada Tanya Menggugat Nurani";
+      reason = "Infleksi nada meninggi pada suku kata akhir untuk menggugah nurani dan permenungan batin umat.";
+    }
+    // 6. Frasa permohonan / ratapan / remuk hati / lembah maut -> Nada Turun Khusyuk
     else if (
       lowerText.includes("kasihanilah") || 
       lowerText.includes("jurang yang dalam") || 
@@ -495,17 +503,17 @@ export function analyzePhrasingAndPitch(verseText, verseIndex, totalVerses, psal
     ) {
       pitchType = "turun";
       pitchIcon = "↘";
-      pitchLabel = "Nada Merendah Khusyuk (Permohonan Batin)";
-      reason = "Merendahkan pitch suara ke register dada bawah untuk memancarkan kerendahan hati dan kepedihan doa yang tulus.";
+      pitchLabel = "Nada Merendah Khusyuk (Permohonan)";
+      reason = "Merendahkan pitch suara ke register dada bawah untuk memancarkan kerendahan hati dan kepedihan doa.";
     }
-    // 6. Frasa terakhir ayat atau diakhiri titik (.) -> Nada Turun (Kadens Tuntas)
-    else if (isLastPhrase || delim.includes(".")) {
-      pitchType = "turun";
+    // 7. Frasa terakhir ayat atau diakhiri titik (.) -> Nada Final Tuntas
+    else if (isLastPhrase || delim.includes(".") || lowerText.includes("tidak ada yang berbuat baik") || lowerText.includes("seorang pun tidak")) {
+      pitchType = "turun-tuntas";
       pitchIcon = "↘";
-      pitchLabel = "Nada Turun (Kadens Tuntas)";
+      pitchLabel = "Nada Final Merendah & Tegas";
       reason = "Kadens suara merendah dengan mantap dan berwibawa, menandakan kepastian dan penutupan pernyataan firman.";
     }
-    // 7. Frasa gelar ilahi atau meditatif di tengah -> Nada Datar Khidmat
+    // 8. Frasa gelar ilahi atau meditatif di tengah -> Nada Datar Khidmat
     else if (
       lowerText === "ya allah" || 
       lowerText === "ya tuhan" || 
@@ -517,19 +525,19 @@ export function analyzePhrasingAndPitch(verseText, verseIndex, totalVerses, psal
       pitchLabel = "Nada Datar Khidmat (Tenuto Sakral)";
       reason = "Nada stabil tanpa ayunan berlebih memberi nuansa hening, agung, dan takzim di hadapan kekudusan Allah.";
     }
-    // 8. Frasa pembuka kalimat deklaratif -> Nada Naik Mengangkat Perhatian
+    // 9. Frasa pembuka kalimat deklaratif -> Nada Naik Mengangkat Perhatian
     else if (isFirstPhrase) {
       pitchType = "naik";
       pitchIcon = "↗";
       pitchLabel = "Nada Naik (Mengangkat Perhatian)";
       reason = "Mengangkat nada bicara pada awal kalimat untuk membangunkan konsentrasi jemaat dan memancarkan wibawa firman.";
     }
-    // 9. Default jeda koma atau jeda nafas pendek (/) -> Nada Naik Menggantung
+    // 10. Default jeda koma atau jeda nafas pendek (/) -> Nada Naik Menggantung
     else {
       pitchType = "naik";
       pitchIcon = "↗";
-      pitchLabel = "Nada Naik Sedikit (Antiseden Menggantung)";
-      reason = "Nada sedikit menggantung di akhir kata sebelum jeda nafas, menandakan bahwa gagasan kalimat masih berlanjut.";
+      pitchLabel = "Nada Naik Sedikit (Menggantung)";
+      reason = "Nada sedikit menggantung di akhir kata sebelum jeda nafas, menandakan bahwa gagasan firman masih berlanjut.";
     }
 
     return {

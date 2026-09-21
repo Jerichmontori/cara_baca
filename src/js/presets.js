@@ -130,65 +130,56 @@ export const psalmPresets = [
         penampilan: "Berdiri tegak dengan tumpuan seimbang pada kedua kaki, pundak rileks, dan pegang teks setinggi dada agar pandangan tidak terus menunduk. Jaga kontak mata berkala dengan audiens pada setiap jeda kalimat.",
         phrasingData: [
           {
-            text: "Untuk pemimpin biduan.",
-            delimiter: "",
-            syllabified: "Un-tuk pe-mim-pin bi-du-an.",
-            pitchType: "datar",
-            pitchIcon: "→",
-            pitchLabel: "Nada Datar-Tegas (Pengantar Formal)",
-            reason: "Buka dengan nada formal dan tegas pada pengantar."
-          },
-          {
-            text: "Dari Daud.",
+            text: "Untuk pemimpin biduan. Dari Daud.",
             delimiter: "//",
-            syllabified: "Da-ri Da-ud.",
+            syllabified: "Un-tuk pe-mim-pin bi-du-an. Da-ri Da-ud.",
             pitchType: "datar",
             pitchIcon: "→",
-            pitchLabel: "Nada Datar-Tegas (Pengantar Daud)",
-            reason: "Nada wibawa tenang; jeda hening // sebelum masuk ke isi firman."
+            pitchLabel: "Nada Datar-Formal (Pengantar Judul)",
+            reason: "Bagian 1: Baca dengan nada formal, wajar, tidak terburu-buru, lalu beri jeda panjang (//) sebelum masuk ke inti teks mazmur."
           },
           {
             text: "Orang bebal berkata dalam hatinya:",
             delimiter: "/",
             syllabified: "O-rang be-bal ber-ka-ta da-lam ha-ti-nya:",
-            pitchType: "turun",
+            pitchType: "turun-berat",
             pitchIcon: "↘",
-            pitchLabel: "Nada Merendah Berat (Isi Firman)",
-            reason: "Masuk ke isi firman: turunkan nada menjadi lebih rendah, berat, dan sedikit ditekan."
+            pitchLabel: "Nada Merendah Berat & Tertahan",
+            reason: "Bagian 2: Turunkan nada batin, gunakan vokal yang agak berat dan tertahan untuk menggambarkan keprihatinan. Jangan teriak. Berikan sedikit jeda sebelum mengucapkan kutipan berikutnya."
           },
           {
             text: "'Tidak ada Allah.'",
             delimiter: "//",
             syllabified: "'Ti-dak a-da Al-lah.'",
-            pitchType: "turun",
+            pitchType: "turun-dingin",
             pitchIcon: "↘",
-            pitchLabel: "Nada Rendah Prihatin (Penyangkalan)",
-            reason: "Beri jeda sepersekian detik sebelum frasa 'Tidak ada Allah'; lafalkan dengan nada berat mencerminkan keprihatinan atas penyangkalan Tuhan."
+            pitchLabel: "Nada Dingin & Hampa (Penyangkalan)",
+            reason: "Bagian 3: Tekankan kata 'Tidak ada' dengan nada dingin dan hampa, mencerminkan kekosongan rohani orang fasik."
           },
           {
             text: "Busuk dan jijik perbuatan mereka,",
             delimiter: "/",
             syllabified: "Bu-suk dan ji-jik per-bu-at-an me-re-ka,",
-            pitchType: "turun",
+            pitchType: "turun-berat",
             pitchIcon: "↘",
-            pitchLabel: "Nada Ditekan Berat (Teguran Prihatin)",
-            reason: "Tekan kata Busuk dan jijik dengan suara berwibawa dari rongga dada."
+            pitchLabel: "Nada Menurun & Mantap (Kemuakan Moral)",
+            reason: "Bagian 4: Gunakan artikulasi tajam pada konsonan /b/, /k/, /j/. Nada suara semakin menurun dan mantap, memperlihatkan kemuakan moral yang tenang tanpa emosi meledak-ledak."
           },
           {
             text: "tidak ada yang berbuat baik.",
             delimiter: ".",
             syllabified: "ti-dak a-da yang ber-bu-at ba-ik.",
-            pitchType: "turun",
+            pitchType: "turun-tuntas",
             pitchIcon: "↘",
-            pitchLabel: "Nada Turun Tuntas (Kadens Dakwaan)",
-            reason: "Tekan kata 'tidak ada'; kadens suara merendah mantap dan tuntas di akhir ayat."
+            pitchLabel: "Nada Final Merendah & Tegas",
+            reason: "Bagian 5: Tutup dengan nada final yang merendah, berat, dan tegas. Jangan biarkan nada menggantung di akhir kalimat."
           }
         ]
       },
       {
         number: 2,
         rawText: "TUHAN memandang ke bawah dari surga kepada anak-anak manusia / untuk melihat apakah ada yang berakal budi / dan yang mencari Allah.",
-        annotatedHtml: "<span class=\"stress-word\">TUHAN memandang</span> ke bawah dari surga kepada anak-anak manusia <span class=\"breath-short\">/</span> untuk melihat apakah ada yang <span class=\"stress-word\">berakal budi</span> <span class=\"breath-short\">/</span> dan yang <span class=\"stress-word\">mencari Allah</span>.",
+        annotatedHtml: "<span class=\"stress-word\">TUHAN memandang</span> ke bawah dari surga kepada anak-anak manusia <span class=\"breath-short\" title=\"Jeda nafas pendek\">/</span> untuk melihat apakah ada yang <span class=\"stress-word\">berakal budi</span> <span class=\"breath-short\" title=\"Jeda nafas pendek\">/</span> dan yang <span class=\"stress-word\">mencari Allah</span>.",
         psikologiAyat: "Tatapan ilahi yang menyelidiki bumi; kesunyian kosmis penelusuran Allah yang mencari manusia beriman dan berakal budi.",
         nadaBatin: "Agung, meditatif, sarat keprihatinan tenang yang menyelidik hati sanubari pendengar.",
         vokal: "Mezzo-piano beresonansi dada, suara jernih bagai gema dari ketinggian surga.",
@@ -196,12 +187,41 @@ export const psalmPresets = [
         intonasi: "Nada naik melandai khidmat pada 'TUHAN memandang ke bawah dari surga', lalu menurun tenang meditatif pada 'dan yang mencari Allah'.",
         ekspresi: "Tatapan mata menatap lurus meluas ke depan seakan-akan merefleksikan pandangan Allah yang menilik umat.",
         penghayatan: "Biarkan hadirin merasakan tatapan suci Tuhan yang memeriksa sudut-sudut batin mereka.",
-        penampilan: "Postur tegap berwibawa, tangan tenang memegang teks setinggi dada tanpa bergoyang."
+        penampilan: "Postur tegap berwibawa, tangan tenang memegang teks setinggi dada tanpa bergoyang.",
+        phrasingData: [
+          {
+            text: "TUHAN memandang ke bawah dari surga kepada anak-anak manusia",
+            delimiter: "/",
+            syllabified: "TU-HAN me-man-dang ke ba-wah da-ri sur-ga ke-pa-da a-nak-a-nak ma-nu-si-a",
+            pitchType: "naik",
+            pitchIcon: "↗",
+            pitchLabel: "Nada Naik Melandai Khidmat",
+            reason: "Tatapan ilahi yang meluas dari ketinggian surga menilik seluruh anak-anak manusia."
+          },
+          {
+            text: "untuk melihat apakah ada yang berakal budi",
+            delimiter: "/",
+            syllabified: "un-tuk me-li-hat a-pa-kah a-da yang ber-a-kal bu-di",
+            pitchType: "datar",
+            pitchIcon: "→",
+            pitchLabel: "Nada Datar Menyelidik",
+            reason: "Penelusuran tenang nan kudus, memeriksa hikmat dan kesadaran batin umat."
+          },
+          {
+            text: "dan yang mencari Allah.",
+            delimiter: ".",
+            syllabified: "dan yang men-ca-ri Al-lah.",
+            pitchType: "turun-tuntas",
+            pitchIcon: "↘",
+            pitchLabel: "Nada Merendah Khidmat Tuntas",
+            reason: "Pencarian jiwa yang rindu akan Allah, ditutup dengan keheningan meditatif."
+          }
+        ]
       },
       {
         number: 3,
         rawText: "Mereka semua telah menyeleweng, // semuanya telah bejat; // tidak ada yang berbuat baik, / seorang pun tidak.",
-        annotatedHtml: "Mereka semua telah <span class=\"stress-word\">menyeleweng</span>, <span class=\"breath-long\">//</span> semuanya telah <span class=\"stress-word\">bejat</span>; <span class=\"breath-long\">//</span> <span class=\"stress-word\">tidak ada</span> yang berbuat baik, <span class=\"breath-short\">/</span> <span class=\"stress-word\">seorang pun tidak</span>.",
+        annotatedHtml: "Mereka semua telah <span class=\"stress-word\">menyeleweng</span>, <span class=\"breath-long\" title=\"Jeda hening panjang (Caesura)\">//</span> semuanya telah <span class=\"stress-word\">bejat</span>; <span class=\"breath-long\" title=\"Jeda hening panjang (Caesura)\">//</span> <span class=\"stress-word\">tidak ada</span> yang berbuat baik, <span class=\"breath-short\" title=\"Jeda nafas pendek\">/</span> <span class=\"stress-word\">seorang pun tidak</span>.",
         psikologiAyat: "Puncak keprihatinan profetik atas kebobrokan universal; tiada satu pun manusia yang dapat memegahkan kesucian dirinya di hadapan Allah.",
         nadaBatin: "Sangat berat, penuh aksentuasi keprihatinan yang tuntas tanpa kompromi.",
         vokal: "Forte-piano terkontrol; volume suara dalam dan tebal bertumpu kuat pada diafragma bawah.",
@@ -209,12 +229,50 @@ export const psalmPresets = [
         intonasi: "Turunkan nada lebih dalam pada 'semuanya telah bejat', dan kunci dengan kadens tuntas berwibawa pada 'seorang pun tidak'.",
         ekspresi: "Alis bertaut khidmat, tatapan lurus menyadarkan audiens akan realitas kerapuhan manusia.",
         penghayatan: "Hayati duka seorang hamba Tuhan yang menyaksikan kerapuhan moral dan perlunya rahmat ilahi.",
-        penampilan: "Tetap berdiri tenang dan khusyuk tanpa gestur menuding; biarkan sabda firman yang berkuasa meresap."
+        penampilan: "Tetap berdiri tenang dan khusyuk tanpa gestur menuding; biarkan sabda firman yang berkuasa meresap.",
+        phrasingData: [
+          {
+            text: "Mereka semua telah menyeleweng,",
+            delimiter: "//",
+            syllabified: "Me-re-ka se-mu-a te-lah me-nye-le-weng,",
+            pitchType: "turun-berat",
+            pitchIcon: "↘",
+            pitchLabel: "Nada Merendah Berat (Duka Profetik)",
+            reason: "Keprihatinan mendalam atas kerapuhan moral manusia; aksen penekanan pada kata 'menyeleweng'."
+          },
+          {
+            text: "semuanya telah bejat;",
+            delimiter: "//",
+            syllabified: "se-mu-a-nya te-lah be-jat;",
+            pitchType: "turun-berat",
+            pitchIcon: "↘",
+            pitchLabel: "Nada Ditekan Tajam (/b/, /j/, /t/)",
+            reason: "Turunkan nada lebih dalam; artikulasikan konsonan letup 't' pada 'bejat' dengan tajam."
+          },
+          {
+            text: "tidak ada yang berbuat baik,",
+            delimiter: "/",
+            syllabified: "ti-dak a-da yang ber-bu-at ba-ik,",
+            pitchType: "turun-berat",
+            pitchIcon: "↘",
+            pitchLabel: "Nada Berat Tertahan",
+            reason: "Penegasan kesadaran diri; tiada yang dapat memegahkan kesucian dirinya di hadapan Allah."
+          },
+          {
+            text: "seorang pun tidak.",
+            delimiter: ".",
+            syllabified: "se-o-rang pun ti-dak.",
+            pitchType: "turun-tuntas",
+            pitchIcon: "↘",
+            pitchLabel: "Kadens Tuntas Tanpa Kompromi",
+            reason: "Kunci dengan kadens tuntas berwibawa di akhir kalimat."
+          }
+        ]
       },
       {
         number: 4,
         rawText: "Tidak sadarkah semua orang yang melakukan kejahatan, / yang memakan habis umat-Ku seperti memakan roti, // dan yang tidak berseru kepada TUHAN?",
-        annotatedHtml: "<span class=\"stress-word\">Tidak sadarkah</span> semua orang yang melakukan kejahatan, <span class=\"breath-short\">/</span> yang memakan habis umat-Ku seperti <span class=\"stress-word\">memakan roti</span>, <span class=\"breath-long\">//</span> dan yang <span class=\"stress-word\">tidak berseru</span> kepada TUHAN?",
+        annotatedHtml: "<span class=\"stress-word\">Tidak sadarkah</span> semua orang yang melakukan kejahatan, <span class=\"breath-short\" title=\"Jeda nafas pendek\">/</span> yang memakan habis umat-Ku seperti <span class=\"stress-word\">memakan roti</span>, <span class=\"breath-long\" title=\"Jeda hening panjang (Caesura)\">//</span> dan yang <span class=\"stress-word\">tidak berseru</span> kepada TUHAN?",
         psikologiAyat: "Gugatan keadilan Allah; pembelaan tegas terhadap kaum lemah dan tertindas dari keserakahan orang jahat.",
         nadaBatin: "Menggugat, bertenaga profetik, membangkitkan nurani yang tertidur lelap.",
         vokal: "Crescendo bertenaga, proyeksi suara tegas terarah menembus ruang ibadah.",
@@ -222,12 +280,41 @@ export const psalmPresets = [
         intonasi: "Nada tanya reflektif yang meninggi di akhir frasa (↗ Nada Naik), menggugah permenungan jemaat.",
         ekspresi: "Mata terbuka tegas, sorot pandang menembus sekeliling ruang mimbar dengan keberanian kebenaran.",
         penghayatan: "Rasakan api keadilan Tuhan yang bangkit membela kaum papa dan tertindas.",
-        penampilan: "Dada terangkat mantap, tubuh condong sedikit ke depan memancarkan wibawa pembawa warta."
+        penampilan: "Dada terangkat mantap, tubuh condong sedikit ke depan memancarkan wibawa pembawa warta.",
+        phrasingData: [
+          {
+            text: "Tidak sadarkah semua orang yang melakukan kejahatan,",
+            delimiter: "/",
+            syllabified: "Ti-dak sa-dar-kah se-mu-a o-rang yang me-la-ku-kan ke-ja-ha-tan,",
+            pitchType: "pertanyaan",
+            pitchIcon: "↗",
+            pitchLabel: "Nada Tanya Menggugat Nurani",
+            reason: "Gugatan profetik keadilan Allah; intonasi meninggi pada suku kata akhir untuk membangunkan nurani."
+          },
+          {
+            text: "yang memakan habis umat-Ku seperti memakan roti,",
+            delimiter: "//",
+            syllabified: "yang me-ma-kan ha-bis u-mat-Ku se-per-ti me-ma-kan ro-ti,",
+            pitchType: "turun-berat",
+            pitchIcon: "↘",
+            pitchLabel: "Nada Menekan Tegas (Pembelaan Kaum Lemah)",
+            reason: "Kecaman tajam terhadap penindasan kaum lemah; jeda hening // sebelum gugatan terakhir."
+          },
+          {
+            text: "dan yang tidak berseru kepada TUHAN?",
+            delimiter: "?",
+            syllabified: "dan yang ti-dak ber-se-ru ke-pa-da TU-HAN?",
+            pitchType: "pertanyaan",
+            pitchIcon: "↗",
+            pitchLabel: "Infleksi Tanya Reflektif Mengangkat",
+            reason: "Infleksi nada meninggi menggantung di akhir ayat untuk menggugah permenungan jemaat."
+          }
+        ]
       },
       {
         number: 5,
         rawText: "Di sanalah mereka sangat terkejut gemetar, // karena Allah menyertai angkatan yang benar.",
-        annotatedHtml: "Di sanalah mereka <span class=\"stress-word\">sangat terkejut gemetar</span>, <span class=\"breath-long\">//</span> karena <span class=\"stress-word\">Allah menyertai</span> angkatan yang benar.",
+        annotatedHtml: "Di sanalah mereka <span class=\"stress-word\">sangat terkejut gemetar</span>, <span class=\"breath-long\" title=\"Jeda hening panjang (Caesura)\">//</span> karena <span class=\"stress-word\">Allah menyertai</span> angkatan yang benar.",
         psikologiAyat: "Titik balik emosional: kengerian orang fasik ketika menyadari bahwa Allah yang hidup hadir membela orang beriman.",
         nadaBatin: "Penuh getaran kengerian di paruh awal, berganti ketenteraman agung dan perlindungan di paruh kedua.",
         vokal: "Vokal intens pada 'terkejut gemetar', lalu melembut penuh wibawa pada 'Allah menyertai'.",
@@ -235,12 +322,32 @@ export const psalmPresets = [
         intonasi: "Kontras melodi: ayunan tinggi pada 'terkejut', lalu turun hangat dan kokoh pada 'Allah menyertai angkatan yang benar'.",
         ekspresi: "Peralihan ekspresi wajah dari tegang kaget menuju teduh beriman penuh keyakinan.",
         penghayatan: "Rasakan bagaimana kepalsuan duniawi runtuh seketika saat hadirat kekudusan Allah dinyatakan.",
-        penampilan: "Jeda hening 1-2 detik di tengah tanda // dengan pandangan mata tenang kepada audiens."
+        penampilan: "Jeda hening 1-2 detik di tengah tanda // dengan pandangan mata tenang kepada audiens.",
+        phrasingData: [
+          {
+            text: "Di sanalah mereka sangat terkejut gemetar,",
+            delimiter: "//",
+            syllabified: "Di sa-na-lah me-re-ka sa-ngat ter-ke-jut ge-me-tar,",
+            pitchType: "naik",
+            pitchIcon: "↗",
+            pitchLabel: "Nada Mengayun Keterkejutan (Gemetar)",
+            reason: "Getaran keterkejutan orang fasik yang menyadari bahwa kepalsuan duniawi runtuh seketika."
+          },
+          {
+            text: "karena Allah menyertai angkatan yang benar.",
+            delimiter: ".",
+            syllabified: "ka-re-na Al-lah me-nyer-ta-i ang-ka-tan yang be-nar.",
+            pitchType: "turun",
+            pitchIcon: "↘",
+            pitchLabel: "Nada Hangat & Perlindungan Kokoh",
+            reason: "Titik balik emosional: ketenteraman agung dan perlindungan kokoh Allah bagi kaum beriman."
+          }
+        ]
       },
       {
         number: 6,
         rawText: "Kamu hendak mempermalukan rancangan orang yang tertindas, // tetapi TUHAN adalah tempat perlindungannya.",
-        annotatedHtml: "Kamu hendak <span class=\"stress-word\">mempermalukan rancangan</span> orang yang tertindas, <span class=\"breath-long\">//</span> tetapi <span class=\"stress-word\">TUHAN adalah tempat perlindungannya</span>.",
+        annotatedHtml: "Kamu hendak <span class=\"stress-word\">mempermalukan rancangan</span> orang yang tertindas, <span class=\"breath-long\" title=\"Jeda hening panjang (Caesura)\">//</span> tetapi <span class=\"stress-word\">TUHAN adalah tempat perlindungannya</span>.",
         psikologiAyat: "Kepastian kemenangan iman; kontras tajam antara niat jahat dunia dengan benteng perlindungan TUHAN yang kokoh.",
         nadaBatin: "Tegas menepis cemoohan, lalu penuh kebanggaan kudus atas perlindungan Allah.",
         vokal: "Transisi vokal dari nada minor peneguran menuju resonansi nada mayor kemenangan iman.",
@@ -248,12 +355,32 @@ export const psalmPresets = [
         intonasi: "Kadens mengangkat pada 'tetapi TUHAN', lalu melandai mantap tuntas pada 'tempat perlindungannya'.",
         ekspresi: "Dahi terbuka lapang, senyum kemenangan iman yang tenang merekah di bibir.",
         penghayatan: "Hayati bahwa orang lemah yang bersandar pada Tuhan memiliki perlindungan terkuat di alam semesta.",
-        penampilan: "Punggung lurus kokoh bagai benteng pertahanan yang tak tergoyahkan."
+        penampilan: "Punggung lurus kokoh bagai benteng pertahanan yang tak tergoyahkan.",
+        phrasingData: [
+          {
+            text: "Kamu hendak mempermalukan rancangan orang yang tertindas,",
+            delimiter: "//",
+            syllabified: "Ka-mu hen-dak mem-per-ma-lu-kan ran-cang-an o-rang yang ter-tin-das,",
+            pitchType: "turun-berat",
+            pitchIcon: "↘",
+            pitchLabel: "Nada Tegas Menepis Cemoohan",
+            reason: "Menepis cemoohan duniawi dengan wibawa kebenaran sabda."
+          },
+          {
+            text: "tetapi TUHAN adalah tempat perlindungannya.",
+            delimiter: ".",
+            syllabified: "te-ta-pi TU-HAN a-da-lah tem-pat per-lin-dung-an-nya.",
+            pitchType: "turun-tuntas",
+            pitchIcon: "↘",
+            pitchLabel: "Kadens Kemenangan Iman Kokoh",
+            reason: "Ditutup dengan keyakinan kokoh bahwa TUHAN adalah benteng pertahanan yang tak terkalahkan."
+          }
+        ]
       },
       {
         number: 7,
         rawText: "Ya, kiranya dari Sion datang keselamatan bagi Israel! // Apabila TUHAN memulihkan keadaan umat-Nya, / Yakub akan bersorak-sorak, / Israel akan bersukacita.",
-        annotatedHtml: "Ya, kiranya dari Sion datang <span class=\"stress-word\">keselamatan bagi Israel</span>! <span class=\"breath-long\">//</span> Apabila <span class=\"stress-word\">TUHAN memulihkan</span> keadaan umat-Nya, <span class=\"breath-short\">/</span> Yakub akan <span class=\"stress-word\">bersorak-sorak</span>, <span class=\"breath-short\">/</span> Israel akan <span class=\"stress-word\">bersukacita</span>.",
+        annotatedHtml: "Ya, kiranya dari Sion datang <span class=\"stress-word\">keselamatan bagi Israel</span>! <span class=\"breath-long\" title=\"Jeda hening panjang (Caesura)\">//</span> Apabila <span class=\"stress-word\">TUHAN memulihkan</span> keadaan umat-Nya, <span class=\"breath-short\" title=\"Jeda nafas pendek\">/</span> Yakub akan <span class=\"stress-word\">bersorak-sorak</span>, <span class=\"breath-short\" title=\"Jeda nafas pendek\">/</span> Israel akan <span class=\"stress-word\">bersukacita</span>.",
         psikologiAyat: "Transisi paripurna menuju puncak sukacita pengharapan; pemulihan keadaan umat dan perayaan keselamatan abadi.",
         nadaBatin: "Penuh kerinduan mesianik yang meledak menjadi sorak-sorai sukacita kemenangan keselamatan yang melimpah.",
         vokal: "Forte hangat, penuh warna suara cemerlang (sonorous & uplifting), nafas diafragma terisi penuh dengan sukacita.",
@@ -261,7 +388,45 @@ export const psalmPresets = [
         intonasi: "Melodi melambung cerah ke nada atas (↗ Nada Naik Sorak Kemenangan), tempo mengalir anggun dan bersemangat.",
         ekspresi: "Wajah berseri-seri penuh sukacita iman, tatapan mata berbinar memancarkan pengharapan bagi seluruh hadirin.",
         penghayatan: "Lepaskan seluruh duka dan teguran di ayat 1; hayati betapa agungnya keselamatan ketika Tuhan memulihkan umat-Nya.",
-        penampilan: "Berdiri tegak mulia, tahan keheningan penuh senyum damai selama 2-3 detik setelah kata terakhir sebelum membungkuk hormat ke arah altar."
+        penampilan: "Berdiri tegak mulia, tahan keheningan penuh senyum damai selama 2-3 detik setelah kata terakhir sebelum membungkuk hormat ke arah altar.",
+        phrasingData: [
+          {
+            text: "Ya, kiranya dari Sion datang keselamatan bagi Israel!",
+            delimiter: "//",
+            syllabified: "Ya, ki-ra-nya da-ri Si-on da-tang ke-se-la-mat-an ba-gi Is-ra-el!",
+            pitchType: "naik-sorak",
+            pitchIcon: "↗",
+            pitchLabel: "Melambung Kerinduan Mesianik",
+            reason: "Kerinduan mendalam yang memancar menuju kedatangan fajar keselamatan Allah."
+          },
+          {
+            text: "Apabila TUHAN memulihkan keadaan umat-Nya,",
+            delimiter: "/",
+            syllabified: "A-pa-bi-la TU-HAN me-mu-lih-kan ke-a-da-an u-mat-Nya,",
+            pitchType: "naik",
+            pitchIcon: "↗",
+            pitchLabel: "Nada Naik Pengharapan Fajar",
+            reason: "Kepastian janji pemulihan keadaan umat yang telah dinanti-nantikan."
+          },
+          {
+            text: "Yakub akan bersorak-sorak,",
+            delimiter: "/",
+            syllabified: "Ya-kub a-kan ber-so-rak-so-rak,",
+            pitchType: "naik-sorak",
+            pitchIcon: "↗",
+            pitchLabel: "Melambung Tinggi Sorak Kemenangan",
+            reason: "Vokal terbuka cerah (a, o) melepaskan sukacita perayaan kemenangan keselamatan iman."
+          },
+          {
+            text: "Israel akan bersukacita.",
+            delimiter: ".",
+            syllabified: "Is-ra-el a-kan ber-su-ka-ci-ta.",
+            pitchType: "turun-tuntas",
+            pitchIcon: "↘",
+            pitchLabel: "Kadens Sukacita Sempurna Tuntas",
+            reason: "Puncak emosi: tutup dengan senyum damai kemenangan iman dan keselamatan abadi."
+          }
+        ]
       }
     ]
   },

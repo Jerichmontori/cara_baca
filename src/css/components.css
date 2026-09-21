@@ -862,22 +862,73 @@
   white-space: nowrap;
 }
 
-.pitch-up {
+.pitch-up,
+.pitch-naik {
   background: rgba(16, 185, 129, 0.18);
   border: 1px solid #10b981;
   color: #34d399;
 }
 
-.pitch-down {
+.pitch-down,
+.pitch-turun {
   background: rgba(239, 68, 68, 0.18);
   border: 1px solid #ef4444;
   color: #f87171;
 }
 
-.pitch-flat {
+.pitch-flat,
+.pitch-datar {
   background: rgba(245, 158, 11, 0.18);
   border: 1px solid #f59e0b;
   color: #fbbf24;
+}
+
+.pitch-turun-berat {
+  background: rgba(153, 27, 27, 0.35);
+  border: 1px solid #dc2626;
+  color: #fca5a5;
+  box-shadow: 0 0 8px rgba(220, 38, 38, 0.25);
+}
+
+.pitch-turun-dingin {
+  background: rgba(30, 58, 138, 0.35);
+  border: 1px solid #60a5fa;
+  color: #93c5fd;
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.2);
+}
+
+.pitch-turun-tuntas {
+  background: rgba(88, 28, 135, 0.35);
+  border: 1px solid #a855f7;
+  color: #d8b4fe;
+  box-shadow: 0 0 8px rgba(168, 85, 247, 0.25);
+}
+
+.pitch-naik-sorak {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.28), rgba(212, 175, 55, 0.28));
+  border: 1px solid #34d399;
+  color: #6ee7b7;
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.3);
+}
+
+.pitch-pertanyaan {
+  background: rgba(14, 116, 144, 0.35);
+  border: 1px solid #38bdf8;
+  color: #7dd3fc;
+}
+
+/* Active Highlight saat frasa sedang dibacakan / disintesis */
+.phrase-row-item.is-speaking-phrase {
+  background: rgba(212, 175, 55, 0.16) !important;
+  border-color: var(--gold-primary) !important;
+  box-shadow: 0 0 18px rgba(212, 175, 55, 0.35) !important;
+  transform: scale(1.015);
+  transition: all 0.25s ease-out;
+}
+
+.phrase-row-item.is-speaking-phrase .phrase-raw {
+  color: #fff !important;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
 .btn-play-pitch {

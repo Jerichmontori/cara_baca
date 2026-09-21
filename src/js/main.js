@@ -63,7 +63,8 @@ export function updateLibraryCountBadge() {
 // Inisialisasi Mazmur Aktif (cek apakah ada naskah terakhir yang dibuka)
 const savedCustoms = getCustomLibrary();
 const allAvailablePsalms = [...savedCustoms, ...psalmPresets];
-let currentPsalm = psalmPresets[0]; // Default: Mazmur 23
+// Default mengutamakan Mazmur 14 (TB2) sebagai referensi masterclass liturgis
+let currentPsalm = psalmPresets.find(p => p.id === "mzm-14") || psalmPresets[0];
 
 try {
   const lastActiveId = localStorage.getItem("bermazmur_last_active_id");
@@ -236,6 +237,10 @@ function renderVerseCards(psalm) {
               <span class="voice-icon">🎙️</span>
               <span class="btn-voice-label">Contoh Baca Ayat Penuh</span>
             </button>
+            <button class="btn btn-outline btn-sm play-full-verse-melody" data-verse-idx="${idx}" title="Dengarkan seluruh alur tangga nada liturgis ayat ini secara berurutan">
+              <span class="melody-icon">🎵</span>
+              <span class="btn-verse-melody-label">Melodi Alur Ayat</span>
+            </button>
             <button class="btn btn-outline btn-sm play-verse-chime" data-verse-idx="${idx}" title="Bunyikan Genta Penyelaras Hati">
               🔔 Genta Hening
             </button>
@@ -279,8 +284,8 @@ function renderVerseCards(psalm) {
             🎵 Alur Intonasi Frasa demi Frasa (Apakah Nada Naik ↗, Turun ↘, atau Datar →):
           </div>
           <div class="phrase-row-list">
-            ${v.phrasingData && v.phrasingData.length > 0 ? v.phrasingData.map(p => `
-              <div class="phrase-row-item">
+            ${v.phrasingData && v.phrasingData.length > 0 ? v.phrasingData.map((p, pIdx) => `
+              <div class="phrase-row-item" id="phrase-row-${v.number}-${pIdx}">
                 <div class="phrase-text-block">
                   <div class="phrase-raw">"${p.text}" ${p.delimiter && p.delimiter !== '.' ? `<span style="color: #38bdf8; font-weight: bold;">[${p.delimiter}]</span>` : ''}</div>
                   <div class="phrase-syllables">✂️ Suku Kata: ${p.syllabified}</div>
@@ -416,18 +421,23 @@ function renderVerseCards(psalm) {
     });
   });
 
-  // Event listener untuk tombol dengar melodi nada liturgis murni (Web Audio API)
+  // Event listener untuk tombol dengar melodi nada liturgis per frasa (Web Audio API)
   container.querySelectorAll(".play-melody-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const pitchType = btn.getAttribute("data-pitch-type") || "naik";
+      const rowItem = btn.closest(".phrase-row-item");
       
-      // Berikan efek visual aktif sesaat
+      // Berikan efek visual aktif pada tombol & baris frasa
       btn.classList.add("is-playing");
-      audioEngine.playPitchContour(pitchType, 0.9);
+      if (rowItem) rowItem.classList.add("is-speaking-phrase");
+
+      audioEngine.playPitchContour(pitchType);
+
       setTimeout(() => {
         btn.classList.remove("is-playing");
-      }, 900);
+        if (rowItem) rowItem.classList.remove("is-speaking-phrase");
+      }, 1200);
     });
   });
 
@@ -437,34 +447,102 @@ function renderVerseCards(psalm) {
       e.stopPropagation();
       const text = btn.getAttribute("data-phrase-text") || "";
       const pitchType = btn.getAttribute("data-pitch-type") || "naik";
+      const rowItem = btn.closest(".phrase-row-item");
 
       if (btn.classList.contains("is-playing")) {
         audioEngine.stopSpeaking();
         btn.classList.remove("is-playing");
+        if (rowItem) rowItem.classList.remove("is-speaking-phrase");
         return;
       }
 
       // Reset status tombol lain yang sedang aktif
-      container.querySelectorAll(".play-phrase-speech-btn.is-playing, .play-full-verse-speech.is-playing").forEach(b => {
+      container.querySelectorAll(".play-phrase-speech-btn.is-playing, .play-full-verse-speech.is-playing, .play-full-verse-melody.is-playing").forEach(b => {
         b.classList.remove("is-playing");
         const lbl = b.querySelector(".btn-voice-label");
         if (lbl) lbl.textContent = "Contoh Baca Ayat Penuh";
+        const mLbl = b.querySelector(".btn-verse-melody-label");
+        if (mLbl) mLbl.textContent = "Melodi Alur Ayat";
       });
+      container.querySelectorAll(".phrase-row-item.is-speaking-phrase").forEach(r => r.classList.remove("is-speaking-phrase"));
 
       audioEngine.speakLectorPhrase(
         text,
         pitchType,
         () => {
           btn.classList.add("is-playing");
+          if (rowItem) rowItem.classList.add("is-speaking-phrase");
         },
         () => {
           btn.classList.remove("is-playing");
+          if (rowItem) rowItem.classList.remove("is-speaking-phrase");
         }
       );
     });
   });
 
-  // Event listener untuk tombol dengar contoh cara membaca 1 ayat penuh
+  // Event listener untuk tombol dengar alur melodi seluruh ayat secara berurutan
+  let activeMelodyCanceller = null;
+  container.querySelectorAll(".play-full-verse-melody").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const vIdx = parseInt(btn.getAttribute("data-verse-idx"), 10);
+      const targetVerse = currentPsalm.verses[vIdx];
+      if (!targetVerse) return;
+
+      const labelSpan = btn.querySelector(".btn-verse-melody-label");
+
+      if (btn.classList.contains("is-playing")) {
+        if (activeMelodyCanceller) activeMelodyCanceller();
+        activeMelodyCanceller = null;
+        btn.classList.remove("is-playing");
+        if (labelSpan) labelSpan.textContent = "Melodi Alur Ayat";
+        const card = document.getElementById("verse-card-" + targetVerse.number);
+        if (card) card.querySelectorAll(".phrase-row-item").forEach(r => r.classList.remove("is-speaking-phrase"));
+        return;
+      }
+
+      // Hentikan pemutaran lain
+      audioEngine.stopSpeaking();
+      if (activeMelodyCanceller) activeMelodyCanceller();
+      container.querySelectorAll(".play-phrase-speech-btn.is-playing, .play-full-verse-speech.is-playing, .play-full-verse-melody.is-playing").forEach(b => {
+        b.classList.remove("is-playing");
+        const lbl = b.querySelector(".btn-voice-label");
+        if (lbl) lbl.textContent = "Contoh Baca Ayat Penuh";
+        const mLbl = b.querySelector(".btn-verse-melody-label");
+        if (mLbl) mLbl.textContent = "Melodi Alur Ayat";
+      });
+      container.querySelectorAll(".phrase-row-item.is-speaking-phrase").forEach(r => r.classList.remove("is-speaking-phrase"));
+
+      activeMelodyCanceller = audioEngine.playFullVerseMelody(
+        targetVerse.phrasingData,
+        () => {
+          btn.classList.add("is-playing");
+          if (labelSpan) labelSpan.textContent = "Hentikan Melodi ⏹️";
+        },
+        () => {
+          btn.classList.remove("is-playing");
+          if (labelSpan) labelSpan.textContent = "Melodi Alur Ayat";
+          const card = document.getElementById("verse-card-" + targetVerse.number);
+          if (card) card.querySelectorAll(".phrase-row-item").forEach(r => r.classList.remove("is-speaking-phrase"));
+        },
+        (phraseIdx) => {
+          const card = document.getElementById("verse-card-" + targetVerse.number);
+          if (card) {
+            card.querySelectorAll(".phrase-row-item").forEach(r => r.classList.remove("is-speaking-phrase"));
+            const targetRow = document.getElementById(`phrase-row-${targetVerse.number}-${phraseIdx}`);
+            if (targetRow) {
+              targetRow.classList.add("is-speaking-phrase");
+              targetRow.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+          }
+        }
+      );
+    });
+  });
+
+  // Event listener untuk tombol dengar contoh cara membaca 1 ayat penuh (Vokal + Nada + Jeda)
+  let activeSpeechCanceller = null;
   container.querySelectorAll(".play-full-verse-speech").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -476,19 +554,28 @@ function renderVerseCards(psalm) {
 
       if (btn.classList.contains("is-playing")) {
         audioEngine.stopSpeaking();
+        if (activeSpeechCanceller) activeSpeechCanceller();
+        activeSpeechCanceller = null;
         btn.classList.remove("is-playing");
         if (labelSpan) labelSpan.textContent = "Contoh Baca Ayat Penuh";
+        const card = document.getElementById("verse-card-" + targetVerse.number);
+        if (card) card.querySelectorAll(".phrase-row-item").forEach(r => r.classList.remove("is-speaking-phrase"));
         return;
       }
 
-      // Reset tombol lain
-      container.querySelectorAll(".play-phrase-speech-btn.is-playing, .play-full-verse-speech.is-playing").forEach(b => {
+      // Reset tombol & pemutaran lain
+      audioEngine.stopSpeaking();
+      if (activeMelodyCanceller) activeMelodyCanceller();
+      container.querySelectorAll(".play-phrase-speech-btn.is-playing, .play-full-verse-speech.is-playing, .play-full-verse-melody.is-playing").forEach(b => {
         b.classList.remove("is-playing");
         const lbl = b.querySelector(".btn-voice-label");
         if (lbl) lbl.textContent = "Contoh Baca Ayat Penuh";
+        const mLbl = b.querySelector(".btn-verse-melody-label");
+        if (mLbl) mLbl.textContent = "Melodi Alur Ayat";
       });
+      container.querySelectorAll(".phrase-row-item.is-speaking-phrase").forEach(r => r.classList.remove("is-speaking-phrase"));
 
-      audioEngine.speakFullVerse(
+      activeSpeechCanceller = audioEngine.speakFullVerse(
         targetVerse.rawText,
         targetVerse.phrasingData,
         () => {
@@ -498,6 +585,19 @@ function renderVerseCards(psalm) {
         () => {
           btn.classList.remove("is-playing");
           if (labelSpan) labelSpan.textContent = "Contoh Baca Ayat Penuh";
+          const card = document.getElementById("verse-card-" + targetVerse.number);
+          if (card) card.querySelectorAll(".phrase-row-item").forEach(r => r.classList.remove("is-speaking-phrase"));
+        },
+        (phraseIdx) => {
+          const card = document.getElementById("verse-card-" + targetVerse.number);
+          if (card) {
+            card.querySelectorAll(".phrase-row-item").forEach(r => r.classList.remove("is-speaking-phrase"));
+            const targetRow = document.getElementById(`phrase-row-${targetVerse.number}-${phraseIdx}`);
+            if (targetRow) {
+              targetRow.classList.add("is-speaking-phrase");
+              targetRow.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+          }
         }
       );
     });
