@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheets -->
-  <script type="module" crossorigin src="./assets/index-CT0UDvwb.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DuY5JU_9.css">
+  <script type="module" crossorigin src="./assets/index-BV0X8VBl.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DNT-kJVz.css">
 </head>
 <body>
 
@@ -307,6 +307,82 @@
     <!-- PANEL 4: EVALUASI MANDIRI (RUBRIK VAIEPP) -->
     <!-- ========================================================= -->
     <section id="panel-eval" class="section-panel">
+
+      <!-- ========================================================= -->
+      <!-- STUDIO PEREKAMAN & AUDIT SUARA LEKTOR (SUMBER HASIL EVALUASI) -->
+      <!-- ========================================================= -->
+      <div class="eval-recording-banner" id="eval-recording-studio">
+        <div class="eval-recording-header">
+          <div class="eval-rec-title-group">
+            <span class="eval-rec-pulse-icon">🎙️</span>
+            <div>
+              <h3 class="eval-rec-title">Studio Perekaman & Audit Suara Lektor</h3>
+              <p class="eval-rec-subtitle">
+                Hasil evaluasi di bawah ini <strong>bukan nilai acak atau template umum yang sama</strong>, melainkan dihitung secara obyektif dari rekaman suara cara Anda membaca mazmur: tempo WPM, ketepatan diksi TB2, pemenggalan jeda sakral (//), dan stabilitas nafas vokal.
+              </p>
+            </div>
+          </div>
+          <div id="eval-rec-source-badge" class="eval-source-badge badge-template">
+            <span class="pulse-dot"></span>
+            <span id="eval-rec-source-text">Status: Menunggu Rekaman Suara Anda</span>
+          </div>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="eval-rec-controls-bar">
+          <div class="eval-rec-btn-cluster">
+            <button id="btn-eval-record-toggle" class="btn btn-burgundy btn-rec-trigger">
+              <span id="eval-rec-icon">🔴</span>
+              <span id="eval-rec-label">Mulai Rekam Pembacaan Saya</span>
+            </button>
+            <button id="btn-eval-simulate" class="btn btn-outline" title="Gunakan rekaman simulasi untuk uji coba cepat jika mikrofon belum siap">
+              <span>⚡</span>
+              <span>Uji Coba Cepat (Simulasi Audio)</span>
+            </button>
+            <button id="btn-eval-go-prompter" class="btn btn-outline" title="Buka Mode Mimbar untuk membaca teks yang bergulir sambil merekam">
+              <span>📜</span>
+              <span>Rekam di Mode Mimbar</span>
+            </button>
+          </div>
+
+          <!-- Live Recording Status: Timer & Audio Level Meter -->
+          <div class="eval-rec-meter-cluster" id="eval-live-meter-cluster">
+            <div class="eval-timer-tag">
+              <span>⏱️</span>
+              <span id="eval-timer-num">00:00</span>
+            </div>
+            <div class="eval-volume-gauge">
+              <span class="gauge-label">Level Vokal:</span>
+              <div class="gauge-bar-bg">
+                <div id="eval-volume-fill" class="gauge-bar-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audit Metrics Dashboard (Muncul setelah suara direkam & dianalisis) -->
+        <div id="eval-audit-dashboard" class="eval-audit-dashboard" style="display: none;">
+          <div class="audit-player-banner">
+            <div class="audit-player-left">
+              <span class="audit-player-title">🔊 Putar Ulang Rekaman Suara Anda:</span>
+              <audio id="eval-audio-player" class="eval-audio-player" controls></audio>
+            </div>
+            <div class="audit-player-right">
+              <span id="audit-timestamp-label" class="audit-timestamp-badge">📅 Rekaman Suara Lektor</span>
+              <button id="btn-eval-rerecord" class="btn btn-outline btn-sm">
+                <span>🔄</span>
+                <span>Rekam Ulang</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 5 Metric Cards Hasil Audit Akustik & Diksi -->
+          <div class="audit-metrics-row" id="audit-metrics-row">
+            <!-- Diisi otomatis oleh JavaScript -->
+          </div>
+        </div>
+      </div>
+
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
 
         <!-- Kiri: Slider Penilaian 6 Pilar -->
@@ -316,9 +392,12 @@
               <span>⭐</span>
               <span>Rubrik Penilaian Mandiri VAIEPP</span>
             </h3>
+            <span id="eval-score-origin-badge" class="badge badge-trust" style="font-size: 0.75rem;">
+              Skor Awal
+            </span>
           </div>
-          <p style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
-            Dengarkan kembali rekaman latihan suara Anda di tab Mode Mimbar, lalu berikan penilaian jujur (skala 1 - 5) untuk setiap pilar di bawah ini.
+          <p id="eval-slider-subtitle" style="font-size: 0.86rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+            Skor di bawah ini diselaraskan dari analisis rekaman suara Anda di atas. Anda juga dapat menyesuaikan slider secara mandiri.
           </p>
 
           <div id="eval-sliders-container">
@@ -379,16 +458,20 @@
               <span>Bedah Kesalahan Cara Membaca & Panduan Menuju Nilai Sempurna (100%)</span>
             </h3>
             <p style="font-size: 0.86rem; color: var(--text-secondary); margin-top: 0.35rem;">
-              Analisis spesifik: apa yang harus diperbaiki dari cara membaca, di bagian teks mana kesalahan terjadi, dan langkah teknis untuk meraih nilai 5/5 sempurna.
+              Analisis spesifik berdasarkan rekaman suara: apa yang harus diperbaiki, di ayat mana kesalahan terjadi, dan langkah teknis meraih nilai 5/5 sempurna.
             </p>
           </div>
 
           <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+            <button id="btn-reapply-recorded" class="btn btn-burgundy btn-sm" style="display: none;" title="Kembalikan nilai ke hasil rekaman suara asli">
+              <span>🎙️</span>
+              <span>Terapkan Skor Rekaman Suara</span>
+            </button>
             <button id="btn-simulate-perfect" class="btn btn-primary btn-sm" title="Simulasi seluruh nilai 5/5 untuk melihat standar masterclass">
               <span>⭐</span>
               <span>Simulasi Nilai Sempurna (100%)</span>
             </button>
-            <button id="btn-reset-eval" class="btn btn-outline btn-sm" title="Kembalikan penilaian ke default">
+            <button id="btn-reset-eval" class="btn btn-outline btn-sm" title="Kembalikan penilaian ke default awal">
               <span>🔄</span>
               <span>Reset Penilaian</span>
             </button>
